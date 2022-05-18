@@ -30,6 +30,7 @@ if __name__ == "__main__":
         sock.close()
     except socket.error as e:
         print("Socket error: %s" % str(e))
+        print("Socket error: %s" % str(e))
     except Exception as e:
         print("Other exception: %s" % str(e))
     finally:
