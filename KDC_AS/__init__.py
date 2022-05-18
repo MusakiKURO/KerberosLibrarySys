@@ -32,7 +32,7 @@ def Create_Thread():
 
 
 if __name__ == "__main__":
-    cursor = linkDB.link_DB()
+    # cursor = linkDB.link_DB()
 
     # Create The Socket
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
