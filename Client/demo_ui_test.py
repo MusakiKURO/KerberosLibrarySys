@@ -3,7 +3,7 @@
 # @File    : demo_ui_test.py
 # @Software: PyCharm
 from PyQt5.QtCore import QCoreApplication
-from demo_reader_secondpage_2 import *
+from demo_reader_secondpage_4 import *
 from demo_reader_firstpage_5 import *
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog
 import sys
@@ -28,7 +28,9 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = parentWindow()
     child = childWindow()
+    # 通过toolButton将两个窗体关联
+    jump = window.main_ui.pushButton_login
+    jump.clicked.connect(child.show)
     # 显示
     window.show()
-    child.show()
     sys.exit(app.exec_())

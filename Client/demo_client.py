@@ -21,12 +21,12 @@ if __name__ == "__main__":
         while True:
             # 发送数据
             send_data = input("请输入要发送的数据：")
-            sock.send(send_data.encode('gbk'))
+            sock.send(send_data.encode('utf-8'))
             if send_data == "quit" or send_data == "exit":
                 break
             # 接收数据
             recv_data = sock.recv(1024)
-            print("Message from server: %s" % recv_data.decode('gbk'))
+            print("Message from server: %s" % recv_data.decode('utf-8'))
         sock.close()
     except socket.error as e:
         print("Socket error: %s" % str(e))
