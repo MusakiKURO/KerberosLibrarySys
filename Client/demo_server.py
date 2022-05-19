@@ -30,7 +30,8 @@ def Creat_thread(sock, addr):
 if __name__ == "__main__":
     # 创建TCP套接字
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
+    # 取消主动断开连接四次握手后的TIME_WAIT状态
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     # 绑定地址和端口号
     srv_addr = ('', 7788)
     sock.bind(srv_addr)
