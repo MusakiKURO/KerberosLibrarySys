@@ -16,9 +16,8 @@ def Creat_thread(sock, addr):
                 print("Client %s exit." % addr[0])
                 break
             if data:
-                print("Message from %s: %s" % (addr[0], data.decode('gbk')))
-
-                sock.send("I have received".encode('gbk'))
+                print("Message from %s: %s" % (addr[0], data.decode('utf-8')))
+                sock.send("I have received".encode('utf-8'))
         sock.close()
     except socket.error as e:
         print("Socket error: %s" % str(e))
