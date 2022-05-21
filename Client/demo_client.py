@@ -18,7 +18,9 @@ Server_ip = '127.0.0.1'
 Server_port = 7790
 
 dict_user = {"control_msg": {"control_src": 00, "control_type": 0, "control_target": 00000},
-             "data_msg": {"ID_c": "张三", "ID_tgs": "TGS", "TS_1": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}}
+             "data_msg": {"ID_c": "张三", "ID_tgs": "TGS", "TS_1": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "ST": {""}},
+             "HMAC": ""}
+
 str_user = json.dumps(dict_user)
 if __name__ == "__main__":
     # 链接AS
