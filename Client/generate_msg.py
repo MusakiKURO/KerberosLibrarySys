@@ -62,6 +62,3 @@ def generate_msg_to_S_Search(src, result, target, select, content):
     str_msg_final = json.dumps(dict_msg_final)
     return str_msg_final
 
-
-test_key = '0kLllffV'
-print(generate_msg_to_AS('00', '0', '00001', '张三', 'TGS', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))

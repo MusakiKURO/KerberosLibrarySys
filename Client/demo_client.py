@@ -1,3 +1,4 @@
+# coding=utf-8
 # @Time    : 2022/5/11 11:26
 # @Author  : Nisky
 # @File    : demo_client.py
@@ -30,8 +31,7 @@ if __name__ == "__main__":
     try:
         # 发送数据
         send_data = DES_call(generate_msg_to_AS('00', '0', '00001', '张三', 'TGS', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')), test_key, 0)
-
-        sock.send(send_data.encode('utf-8'))
+        sock.sendall(send_data.encode('utf-8'))
 
         # 接收数据
         recv_data = sock.recv(8192)
