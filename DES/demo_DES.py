@@ -253,9 +253,3 @@ def DES_call(text, key, option):
         for i in range(len(msg_list)):
             result_bit = result_bit + DES(list(map(int, msg_list[i])), key, option)
         return bits2str(result_bit)
-
-
-test_str_1 = "Самое дорогое нανє α вяα¢єℓєт あなたは何を思うの 신은 무슨 생각을  당신  बीजिंग में आपका स्वागत है عربي/عربى"
-test_key = '0kLllffV'
-print(DES_call(test_str_1, test_key, 0))
-print(DES_call(DES_call(test_str_1, test_key, 0), test_key, 1))
