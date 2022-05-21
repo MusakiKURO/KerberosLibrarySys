@@ -21,37 +21,36 @@ dict_user = \
 """
 
 
-def Create_Thread():
+def Create_Thread(sock, addr):
     print('Accept new connection from %s:%s...' % addr)
     sock.send('connect success!'.encode())
     # 客户端返回信息进行确认开始工作
     data = sock.recv(1024 * 10).decode()
     msg_data = json.loads(data)
-    file = open("from_client.json", 'w')
-    file.write(msg_data)
+    # file = open("from_client.json", 'w')
+    # file.write(msg_data)
 
     msg_CtoA = msgCtoA(["data_msg"]["ID_c"], ["data_msg"]["ID_tgs"], ["data_msg"]["TS_1"])
     if(msg_data["control_msg"]["control_target"]=="00010"):
         #验证时钟同步
-        nowtime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        # difference = (datetime.strptime(msg_CtoA.ts_1, "%Y-%m-%d %H:%M:%S") - datetime.strptime(nowtime, "%Y-%m-%d %H:%M:%S"))
+        TS_2 = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # difference = (datetime.strptime(msg_CtoA.ts_1, "%Y-%m-%d %H:%M:%S") - datetime.strptime(TS_2, "%Y-%m-%d %H:%M:%S"))
         # print(difference)
-        if datetime.strptime(msg_CtoA.ts_1, "%Y-%m-%d %H:%M:%S") - datetime.strptime(nowtime, "%Y-%m-%d %H:%M:%S") < timedelta(minutes=5):
-            send_msg()
-
-    # print(msg_data["start"])
-def create_msgAtoC():
+        if datetime.strptime(msg_CtoA.ts_1, "%Y-%m-%d %H:%M:%S") - datetime.strptime(TS_2, "%Y-%m-%d %H:%M:%S") < timedelta(minutes=5):
+            send_msg(msg_CtoA, TS_2, addr)
 
 
-def send_msg():
-    create_msgAtoC()
+def create_msgAtoC(msg_CtoA,TS_2,addr):
+
+
+def send_msg(msg_CtoA,TS_2,addr):
+    create_msgAtoC(msg_CtoA,TS_2,addr)
     # 这里开始使用传数据
     data = {
     }
     str_json = json.dumps(data)
     sock.send(str_json.encode())
     print("---------------发送完成-----------------")
-
 
 if __name__ == "__main__":
     myas = myAS()

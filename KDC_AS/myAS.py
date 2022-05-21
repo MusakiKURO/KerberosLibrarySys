@@ -7,6 +7,7 @@ class myAS:
         self.EKtgs = None
         self.sendmsg = None
 
+
 class msgCtoA:
 
     def __init__(self,ID_c,ID_tgs,TS_1):
