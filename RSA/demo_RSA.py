@@ -39,6 +39,7 @@ def generate_block_text(text, option):
         return text_list
 
 
+# 输入参数：输入的文本（明文或者密文），密钥中的n， 密钥中的e或者d，取决于后面的option
 def RSA_call(text, n, x, option):
     if option == 0:
         byte_text = []

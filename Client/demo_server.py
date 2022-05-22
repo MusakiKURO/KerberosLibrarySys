@@ -21,9 +21,9 @@ def Creat_thread(sock, addr):
 
     try:
         while True:
+            # 将收到的数据拼接起来
             total_data = bytes()
             while True:
-                # 将收到的数据拼接起来
                 data = sock.recv(1024)
                 total_data += data
                 if len(data) < 1024:
@@ -32,8 +32,9 @@ def Creat_thread(sock, addr):
                 print("Client %s exit." % addr[0])
                 break
             if total_data:
-                print("Message from %s: %s" % (addr[0], total_data.decode('utf-8')))
-                print("Message from %s: %s" % (addr[0], DES_call(total_data.decode('utf-8'), test_key, 1)))
+                print("Message from %s:\n%s" % (addr[0], total_data.decode('utf-8')))
+
+                print("Message from %s:\n%s" % (addr[0], DES_call(total_data.decode('utf-8'), test_key, 1)))
 
                 text_json_loads = json.loads(DES_call(total_data.decode('utf-8'), test_key, 1))
                 text_josn_dumps = json.dumps(
@@ -45,7 +46,7 @@ def Creat_thread(sock, addr):
                                   'TS_1': text_json_loads['data_msg']['TS_1']}})
                 print(check_password_hash(RSA_call(text_json_loads['HMAC'], C_n, C_e, 1), text_josn_dumps))
 
-                sock.send("I have received".encode('utf-8'))
+                sock.sendall(DES_call("I have received", test_key, 0).encode('utf-8'))
         sock.close()
     except socket.error as e:
         print("Socket error: %s" % str(e))
@@ -72,4 +73,3 @@ if __name__ == "__main__":
         conn, addr = sock.accept()
         t = threading.Thread(target=Creat_thread, args=(conn, addr))
         t.start()
-        t.join()

@@ -2,7 +2,7 @@
 # @Author  : Nisky
 # @File    : demo_DES.py
 # @Software: PyCharm
-from demo_DES_BOX import *
+import demo_DES_BOX
 from bitarray import bitarray
 
 
@@ -58,7 +58,7 @@ def create_Keys(inkeys):
     key1 = [0 for i in range(48)]
     # 进行密码压缩置换1，将64位密码压缩为56位
     for i in range(56):
-        key0[i] = keyinit[PC1[i] - 1]
+        key0[i] = keyinit[demo_DES_BOX.PC1[i] - 1]
 
     # 进行16轮的密码生成
     for i in range(16):
@@ -88,7 +88,7 @@ def create_Keys(inkeys):
 
         # ------------对56位密钥进行压缩置换，压缩为48位-------------
         for k in range(48):
-            key1[k] = key0[PC2[k] - 1]
+            key1[k] = key0[demo_DES_BOX.PC2[k] - 1]
         keyResult.extend(key1)
 
         # ------------------------------------------------------
@@ -109,7 +109,7 @@ def DES(bitText, key, optionType):
 
         # ------------------进行初始IP置换---------------
         for i in range(64):
-            initTrans[i] = bitText[IP[i] - 1]
+            initTrans[i] = bitText[demo_DES_BOX.IP[i] - 1]
         # 将64位明文分为左右两部分
         L = [initTrans[i] for i in range(32)]
         R = [initTrans[i] for i in range(32, 64)]
@@ -120,7 +120,7 @@ def DES(bitText, key, optionType):
 
             # -----------进行扩展，将32位扩展为48位--------
             for j in range(48):
-                extendR[j] = R[E[j] - 1]
+                extendR[j] = R[demo_DES_BOX.E[j] - 1]
             #           print(len(keyResult))
             keyi = [keyResult[j] for j in range(i * 48, i * 48 + 48)]
             # ----------与key值进行异或运算----------------
@@ -135,14 +135,14 @@ def DES(bitText, key, optionType):
                 row = XORResult[k * 6] * 2 + XORResult[k * 6 + 5]
                 column = XORResult[k * 6 + 1] * 8 + XORResult[k * 6 + 2] * 4 + XORResult[k * 6 + 3] * 2 + XORResult[
                     k * 6 + 4]
-                temp = S[k][row * 16 + column]
+                temp = demo_DES_BOX.S[k][row * 16 + column]
                 for m in range(4):
                     SResult[k * 4 + m] = (temp >> m) & 1
             # -----------------------------------------
             PResult = [0 for k in range(32)]
             # --------------开始进行P盒置换----------------
             for k in range(32):
-                PResult[k] = SResult[P[k] - 1]
+                PResult[k] = SResult[demo_DES_BOX.P[k] - 1]
             # ------------------------------------------
 
             # --------------与L部分的数据进行异或------------
@@ -164,7 +164,7 @@ def DES(bitText, key, optionType):
         tempText.extend(R)
         # -----------IP逆置换--------
         for k in range(64):
-            finalTextOfBit[k] = tempText[RIP[k] - 1]
+            finalTextOfBit[k] = tempText[demo_DES_BOX.RIP[k] - 1]
         finalTextOfStr = "".join(list(map(str, finalTextOfBit)))
         return finalTextOfStr
 
@@ -176,7 +176,7 @@ def DES(bitText, key, optionType):
 
         # ------------------进行初始IP置换---------------
         for i in range(64):
-            initTrans[i] = bitText[IP[i] - 1]
+            initTrans[i] = bitText[demo_DES_BOX.IP[i] - 1]
         # 将64位明文分为左右两部分
         L = [initTrans[i] for i in range(32)]
         R = [initTrans[i] for i in range(32, 64)]
@@ -187,7 +187,7 @@ def DES(bitText, key, optionType):
 
             # -----------进行扩展，将32位扩展为48位--------
             for j in range(48):
-                extendR[j] = R[E[j] - 1]
+                extendR[j] = R[demo_DES_BOX.E[j] - 1]
 
             keyi = [keyResult[j] for j in range(i * 48, i * 48 + 48)]
             # ----------与key值进行异或运算----------------
@@ -202,14 +202,14 @@ def DES(bitText, key, optionType):
                 row = XORResult[k * 6] * 2 + XORResult[k * 6 + 5]
                 column = XORResult[k * 6 + 1] * 8 + XORResult[k * 6 + 2] * 4 + XORResult[k * 6 + 3] * 2 + XORResult[
                     k * 6 + 4]
-                temp = S[k][row * 16 + column]
+                temp = demo_DES_BOX.S[k][row * 16 + column]
                 for m in range(4):
                     SResult[k * 4 + m] = (temp >> m) & 1
             # -----------------------------------------
             PResult = [0 for k in range(32)]
             # --------------开始进行P盒置换----------------
             for k in range(32):
-                PResult[k] = SResult[P[k] - 1]
+                PResult[k] = SResult[demo_DES_BOX.P[k] - 1]
             # ------------------------------------------
 
             # --------------与L部分的数据进行异或------------
@@ -231,11 +231,12 @@ def DES(bitText, key, optionType):
         tempText.extend(R)
         # -----------IP逆置换--------
         for k in range(64):
-            finalTextOfBit[k] = tempText[RIP[k] - 1]
+            finalTextOfBit[k] = tempText[demo_DES_BOX.RIP[k] - 1]
         finalTextOfStr = "".join(list(map(str, finalTextOfBit)))
         return finalTextOfStr
 
 
+# 输入的参数：文本（明文或者密文），
 def DES_call(text, key, option):
     # 加密
     if option == 0:

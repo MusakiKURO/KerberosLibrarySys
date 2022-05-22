@@ -30,12 +30,22 @@ if __name__ == "__main__":
     # 发送并接收数据
     try:
         # 发送数据
+        print("start...")
         send_data = DES_call(generate_msg_to_AS('00', '0', '00001', '张三', 'TGS', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')), test_key, 0)
         sock.sendall(send_data.encode('utf-8'))
 
         # 接收数据
-        recv_data = sock.recv(8192)
+
+        total_data = bytes()
+        while True:
+            # 将收到的数据拼接起来
+            recv_data = sock.recv(1024)
+            total_data += recv_data
+            if len(recv_data) < 1024:
+                break
+
         print("Message from server: %s" % recv_data.decode('utf-8'))
+        print(len(recv_data.decode('utf-8')))
         sock.close()
     except socket.error as e:
         print("Socket error: %s" % str(e))
