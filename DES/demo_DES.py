@@ -236,6 +236,7 @@ def DES(bitText, key, optionType):
         return finalTextOfStr
 
 
+# 输入的参数：文本（明文或者密文），
 def DES_call(text, key, option):
     # 加密
     if option == 0:
