@@ -8,7 +8,7 @@ import linkDB
 # ------数据协议相关配置------
 
 # 服务器相关配置,便于修改
-from KDC_AS.myAS import myAS, msgCtoA
+from KDC_AS.myAS import myAS, msgCtoA, ticket_tgs
 
 SERVER_IP = '127.0.0.1'
 SERVER_PORT = 11220
@@ -21,7 +21,7 @@ dict_user = \
 """
 
 
-def Create_Thread(sock, addr):
+def create_Thread(sock, addr):
     print('Accept new connection from %s:%s...' % addr)
     sock.send('connect success!'.encode())
     # 客户端返回信息进行确认开始工作
@@ -37,10 +37,14 @@ def Create_Thread(sock, addr):
         # difference = (datetime.strptime(msg_CtoA.ts_1, "%Y-%m-%d %H:%M:%S") - datetime.strptime(TS_2, "%Y-%m-%d %H:%M:%S"))
         # print(difference)
         if datetime.strptime(msg_CtoA.ts_1, "%Y-%m-%d %H:%M:%S") - datetime.strptime(TS_2, "%Y-%m-%d %H:%M:%S") < timedelta(minutes=5):
+
             send_msg(msg_CtoA, TS_2, addr)
 
 
 def create_msgAtoC(msg_CtoA,TS_2,addr):
+    ticket_TGS = ticket_tgs(msg_CtoA.id_c,addr,TS_2)
+    #ticket_TGS先加密
+
 
 
 def send_msg(msg_CtoA,TS_2,addr):
@@ -69,4 +73,4 @@ if __name__ == "__main__":
         sock, addr = s.accept()
 
         # 创建一个线程来处理连接
-        t = threading.Thread(target=Create_Thread(sock, addr))
+        t = threading.Thread(target=create_Thread(sock, addr))
