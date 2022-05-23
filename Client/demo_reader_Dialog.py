@@ -12,7 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QAbstractItemView, QHeaderView, QMenu, QTableWidgetItem
 
 
-class Ui_Dialog(object):
+class Ui_Dialog(QtWidgets.QDialog):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(698, 425)
