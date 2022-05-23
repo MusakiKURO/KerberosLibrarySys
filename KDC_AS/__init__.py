@@ -8,7 +8,8 @@ import linkDB
 # ------数据协议相关配置------
 
 # 服务器相关配置,便于修改
-from KDC_AS.myAS import myAS, msgCtoA, ticket_tgs
+from DES.demo_DES import DES_call
+from KDC_AS.myAS import *
 
 SERVER_IP = '127.0.0.1'
 SERVER_PORT = 11220
@@ -29,32 +30,49 @@ def create_Thread(sock, addr):
     msg_data = json.loads(data)
     # file = open("from_client.json", 'w')
     # file.write(msg_data)
-
     msg_CtoA = msgCtoA(["data_msg"]["ID_c"], ["data_msg"]["ID_tgs"], ["data_msg"]["TS_1"])
-    if(msg_data["control_msg"]["control_target"]=="00010"):
-        #验证时钟同步
+
+    EK_c = "22222222"  # 从数据库中获取，作为参数向下传递
+
+    if msg_data["control_msg"]["control_target"] == "00001":
+        # 验证时钟同步
         TS_2 = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        # difference = (datetime.strptime(msg_CtoA.ts_1, "%Y-%m-%d %H:%M:%S") - datetime.strptime(TS_2, "%Y-%m-%d %H:%M:%S"))
-        # print(difference)
+        # difference = (datetime.strptime(msg_CtoA.ts_1, "%Y-%m-%d %H:%M:%S") - datetime.strptime(TS_2, "%Y-%m-%d
+        # %H:%M:%S")) print(difference)
         if datetime.strptime(msg_CtoA.ts_1, "%Y-%m-%d %H:%M:%S") - datetime.strptime(TS_2, "%Y-%m-%d %H:%M:%S") < timedelta(minutes=5):
-
-            send_msg(msg_CtoA, TS_2, addr)
-
-
-def create_msgAtoC(msg_CtoA,TS_2,addr):
-    ticket_TGS = ticket_tgs(msg_CtoA.id_c,addr,TS_2)
-    #ticket_TGS先加密
+            msg_AtoC = create_msgAtoC(msg_CtoA, TS_2, addr)
+            send_msg(msg_AtoC, EK_c, "01", "0", "00001")
 
 
+def create_msgAtoC(msg_CtoA, TS_2, addr):
+    ticket_temp = ticket_tgs(msg_CtoA.id_c, addr, TS_2)
+    ticket_TGS = \
+        {
+            "EKc_tgs": ticket_temp.EKc_tgs,
+            "ID_c": ticket_temp.id_c,
+            "AD_c": ticket_temp.ad_c,
+            "ID_tgs": ticket_temp.id_tgs,
+            "TS_2": ticket_temp.ts_2,
+            "LifeTime_2": ticket_temp.lifetime_2
+        }
+    msg_AtoC_tmp = msgAtoC(msg_CtoA, TS_2, ticket_temp.EKc_tgs)
+    msg_AtoC = \
+        {
+            "EKc_tgs": msg_AtoC_tmp.Ekc_tgs,
+            "ID_tgs": msg_AtoC_tmp.id_tgs,
+            "TS_2": msg_AtoC_tmp.ts_2,
+            "LifeTime_2": msg_AtoC_tmp.lifetime_2,
+            "ticket_TGS": DES_call(json.dumps(ticket_TGS), ticket_temp.EKc_tgs, 0)  # 加密
+        }
+    return json.dumps(msg_AtoC)
 
-def send_msg(msg_CtoA,TS_2,addr):
-    create_msgAtoC(msg_CtoA,TS_2,addr)
+
+def send_msg(msg_AtoC, EK_c, src, result, target):
     # 这里开始使用传数据
-    data = {
-    }
-    str_json = json.dumps(data)
-    sock.send(str_json.encode())
+    send_data = DES_call(generate_msg_to_C(src, result, target, msg_AtoC), EK_c, 0)
+    sock.sendall(send_data.encode('utf-8'))
     print("---------------发送完成-----------------")
+
 
 if __name__ == "__main__":
     myas = myAS()

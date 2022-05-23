@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c3cfbabc-79c7-44f1-854f-b18303507d47" name="变更" comment="AS demo2">
-      <change afterPath="$PROJECT_DIR$/Client/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DES/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/KerberosLibrarySys.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/KerberosLibrarySys.iml" afterDir="false" />
+    <list default="true" id="c3cfbabc-79c7-44f1-854f-b18303507d47" name="变更" comment="AS temp">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/demo_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/demo_server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KDC_AS/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/KDC_AS/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KDC_AS/myAS.py" beforeDir="false" afterPath="$PROJECT_DIR$/KDC_AS/myAS.py" afterDir="false" />
     </list>
@@ -192,7 +188,14 @@
       <option name="project" value="LOCAL" />
       <updated>1653110708907</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="AS temp">
+      <created>1653312203911</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1653312203911</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -213,6 +216,7 @@
     <MESSAGE value="demo test" />
     <MESSAGE value="AS demo1" />
     <MESSAGE value="AS demo2" />
-    <option name="LAST_COMMIT_MESSAGE" value="AS demo2" />
+    <MESSAGE value="AS temp" />
+    <option name="LAST_COMMIT_MESSAGE" value="AS temp" />
   </component>
 </project>
