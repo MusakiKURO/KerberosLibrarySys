@@ -5,10 +5,8 @@
 # @Software: PyCharm
 import socket
 import datetime
-import json
 from KerberosLibrarySys.DES.demo_DES import *
-from KerberosLibrarySys.RSA.demo_RSA import *
-from KerberosLibrarySys.Client.generate_msg import *
+from generate_msg import *
 
 test_key = '0kLllffV'
 
@@ -31,7 +29,7 @@ if __name__ == "__main__":
         # 发送数据
         print("start...")
         send_data = DES_call(
-            generate_msg_to_AS('00', '0', '00001', '张三', 'TGS', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
+            generate_msg_to_AS_Kerberos('00', '0', '00001', '张三', 'TGS', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
             test_key, 0)
         sock.sendall(send_data.encode('utf-8'))
 
@@ -47,7 +45,6 @@ if __name__ == "__main__":
         print(len(recv_data.decode('utf-8')))
         sock.close()
     except socket.error as e:
-        print("Socket error: %s" % str(e))
         print("Socket error: %s" % str(e))
     except Exception as e:
         print("Other exception: %s" % str(e))

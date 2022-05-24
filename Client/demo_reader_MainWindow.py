@@ -9,6 +9,9 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import QCoreApplication
+from PyQt5.QtWidgets import QApplication, QMainWindow
+import sys
 
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
@@ -146,3 +149,19 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.label_username.setText(_translate("MainWindow", "密码"))
         self.label_tip.setText(_translate("MainWindow", "若要使用该系统，请输入您的账号和对应的密码，"+"若没有账号，请选择注册。"))
         self.label_showtext.setText(_translate("MainWindow", "Kerberos流程中"+"Clinet与其他主体通信的明文和密文"))
+
+
+class parentWindow(QMainWindow):
+    def __init__(self):
+        QMainWindow.__init__(self)
+        self.main_ui = Ui_MainWindow()
+        self.main_ui.setupUi(self)
+
+
+if __name__ == '__main__':
+    QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+    app = QApplication(sys.argv)
+    window = parentWindow()
+    # 显示
+    window.show()
+    sys.exit(app.exec_())

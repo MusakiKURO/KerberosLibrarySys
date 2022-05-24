@@ -71,7 +71,7 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
     def __init__(self):
         super(MainWindow_Logic, self).__init__()
         # 创建socket
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket = None
 
     def generate_msg_to_AS_register(self, src, result, target, ID_c, ID_pw):
         dict_msg_orign = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
@@ -139,13 +139,12 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
         self.textBrowser_showtext.append(str_msg_final)
         return str_msg_final
 
-    """
-    def Client_AS_Register(self):
+    def C_AS_Register(self):
         self.socket.connect((AS_IP, AS_Port))
         try:
             # 发送数据
             send_data = DES_call(
-                generate_msg_to_AS_register('00', '0', '00000', str(self.lineEdit_username.text()), 'TGS'),
+                self.generate_msg_to_AS_register('00', '0', '00000', str(self.lineEdit_username.text()), 'TGS'),
                 str(self.lineEdit_passwd.text()), 0)
             self.socket.sendall(send_data.encode('utf-8'))
             # 接收数据,将收到的数据拼接起来
@@ -176,17 +175,16 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
             print("Other exception: %s" % str(e))
         finally:
             self.socket.close()
-    """
 
     def C_AS_Kerberos(self):
         global TGT
         global EKc_tgs
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((AS_IP, AS_Port))
         try:
             # 发送数据
             send_data = self.generate_msg_to_AS_Kerberos('00', '0', '00001', str(self.lineEdit_username.text()), 'TGS',
                                                          datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-
             self.socket.sendall(send_data.encode('utf-8'))
             # 接收数据,将收到的数据拼接起来
             total_data = bytes()
@@ -198,22 +196,44 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
             if total_data:
                 final_str_data = DES_call(total_data.decode('utf-8'), str(self.lineEdit_passwd.text()), 1)
                 final_loads_data = json.loads(final_str_data)
-                final_dumps_data = json.dumps(
-                    {'control_msg': {'control_src': final_loads_data['control_msg']['control_src'],
-                                     'control_result': final_loads_data['control_msg']['control_result'],
-                                     'control_target': final_loads_data['control_msg']['control_target']},
-                     'data_msg': {'EKc_tgs': final_loads_data['data_msg']['EKc_tgs'],
-                                  'ID_tgs': final_loads_data['data_msg']['ID_tgs'],
-                                  'TS_2': final_loads_data['data_msg']['TS_2'],
-                                  'lifetime_2': final_loads_data['data_msg']['lifetime_2'],
-                                  'tick_tgs': final_loads_data['data_msg']['tick_tgs']}})
-                hash_check = check_password_hash(RSA_call(final_loads_data['HMAC'], AS_n, AS_e, 1), final_dumps_data)
-                if not hash_check:
-                    QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
-                else:
-                    QMessageBox.information(self, "提示", "AS认证通过！", QMessageBox.Yes, QMessageBox.Yes)
-                TGT = final_loads_data['data_msg']['tick_tgs']
-                EKc_tgs = final_loads_data['data_msg']['EKc_tgs']
+                ###
+                # 收到来自TGS的正确消息的情况
+                if final_loads_data['control_msg']['control_result'] == '0':
+                    final_dumps_data = json.dumps(
+                        {'control_msg': {'control_src': final_loads_data['control_msg']['control_src'],
+                                         'control_result': final_loads_data['control_msg']['control_result'],
+                                         'control_target': final_loads_data['control_msg']['control_target']},
+                         'data_msg': {'EKc_tgs': final_loads_data['data_msg']['EKc_tgs'],
+                                      'ID_tgs': final_loads_data['data_msg']['ID_tgs'],
+                                      'TS_2': final_loads_data['data_msg']['TS_2'],
+                                      'lifetime_2': final_loads_data['data_msg']['lifetime_2'],
+                                      'tick_tgs': final_loads_data['data_msg']['tick_tgs']}})
+                    hash_check = check_password_hash(RSA_call(final_loads_data['HMAC'], AS_n, AS_e, 1),
+                                                     final_dumps_data)
+                    if not hash_check:
+                        QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
+                    else:
+                        QMessageBox.information(self, "提示", "AS认证通过！", QMessageBox.Yes, QMessageBox.Yes)
+                        TGT = final_loads_data['data_msg']['tick_tgs']
+                        EKc_tgs = final_loads_data['data_msg']['EKc_tgs']
+                # 收到来自TGS的错误消息的情况
+                if final_loads_data['control_msg']['control_result'] == '1':
+                    final_dumps_data = json.dumps(
+                        {'control_msg': {'control_src': final_loads_data['control_msg']['control_src'],
+                                         'control_result': final_loads_data['control_msg']['control_result'],
+                                         'control_target': final_loads_data['control_msg']['control_target']},
+                         'data_msg': {'EKc_tgs': final_loads_data['data_msg']['EKc_tgs'],
+                                      'ID_tgs': final_loads_data['data_msg']['ID_tgs'],
+                                      'TS_2': final_loads_data['data_msg']['TS_2'],
+                                      'lifetime_2': final_loads_data['data_msg']['lifetime_2'],
+                                      'tick_tgs': final_loads_data['data_msg']['tick_tgs']}})
+                    hash_check = check_password_hash(RSA_call(final_loads_data['HMAC'], AS_n, AS_e, 1),
+                                                     final_dumps_data)
+                    if not hash_check:
+                        QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
+                    else:
+                        QMessageBox.information(self, "提示", "AS认证不通过！", QMessageBox.Yes, QMessageBox.Yes)
+                ###
         except socket.error as e:
             print("Socket error: %s" % str(e))
         except Exception as e:
@@ -226,6 +246,7 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
         global EKc_tgs
         global ST
         global EKc_v
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((TGS_IP, TGS_Port))
         try:
             # 发送数据
@@ -270,6 +291,7 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
     def C_S_Kerberos(self):
         global ST
         global EKc_v
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((TGS_IP, TGS_Port))
         TS_5 = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         try:
@@ -306,3 +328,10 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
             print("Other exception: %s" % str(e))
         finally:
             self.socket.close()
+
+
+if __name__ == '__main__':
+    app = QtWidgets.QApplication(sys.argv)
+    ui = MainWindow_Logic()
+    ui.show()
+    sys.exit(app.exec_())
