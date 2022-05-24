@@ -4,7 +4,8 @@
 # @File    : demo_MainWindow_logic.py
 # @Software: PyCharm
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtWidgets import QMessageBox, QMainWindow
 from Client import demo_reader_MainWindow
 from Client.demo_reader_MainWindow import Ui_MainWindow
@@ -336,6 +337,7 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
 
 
 if __name__ == '__main__':
+    QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     app = QtWidgets.QApplication(sys.argv)
     ui = MainWindow_Logic()
     ui.show()

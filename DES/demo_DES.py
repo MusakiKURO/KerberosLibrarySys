@@ -4,7 +4,6 @@
 # @Software: PyCharm
 
 from bitarray import bitarray
-
 from DES import demo_DES_BOX
 
 

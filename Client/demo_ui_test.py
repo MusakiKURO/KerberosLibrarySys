@@ -3,8 +3,8 @@
 # @File    : demo_ui_test.py
 # @Software: PyCharm
 from PyQt5.QtCore import QCoreApplication
-from demo_reader_Dialog_ui import *
-from demo_reader_MainWindow_ui import *
+from demo_reader_Dialog import *
+from demo_reader_MainWindow import *
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog
 import sys
 
