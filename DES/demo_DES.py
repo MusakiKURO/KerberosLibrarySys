@@ -2,8 +2,10 @@
 # @Author  : Nisky
 # @File    : demo_DES.py
 # @Software: PyCharm
-import demo_DES_BOX
+
 from bitarray import bitarray
+
+from DES import demo_DES_BOX
 
 
 def str2bits(s):

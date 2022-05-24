@@ -6,9 +6,9 @@
 
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMessageBox
-from KerberosLibrarySys.Client import demo_reader_MainWindow
-from KerberosLibrarySys.DES.demo_DES import DES_call
-from KerberosLibrarySys.RSA.demo_RSA import RSA_call
+from Client import demo_reader_MainWindow
+from DES.demo_DES import DES_call
+from RSA.demo_RSA import RSA_call
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
 import socket
