@@ -5,8 +5,9 @@
 # @Software: PyCharm
 
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QMainWindow
 from Client import demo_reader_MainWindow
+from Client.demo_reader_MainWindow import Ui_MainWindow
 from DES.demo_DES import DES_call
 from RSA.demo_RSA import RSA_call
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -70,6 +71,10 @@ C_d = 27572736362601538923973421073502597804231948558457662898589503976711280369
 class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
     def __init__(self):
         super(MainWindow_Logic, self).__init__()
+
+        QMainWindow.__init__(self)
+        self.main_ui = Ui_MainWindow()
+        self.main_ui.setupUi(self)
         # 创建socket
         self.socket = None
 
