@@ -66,6 +66,16 @@ def create_msgAtoC(msg_CtoA, TS_2, addr):
         }
     return json.dumps(msg_AtoC)
 
+def generate_msg_to_C(src, result, target, data_msg):
+    dict_msg_orign = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
+                      'data_msg': data_msg}
+    str_msg_orign = json.dumps(dict_msg_orign)
+    HMAC = generate_password_hash(str_msg_orign)
+    dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
+                      'data_msg': data_msg,
+                      'HMAC': RSA_call(HMAC, myas.pKey, myas.sKey, 0)}
+    str_msg_final = json.dumps(dict_msg_final)
+    return str_msg_final
 
 def send_msg(msg_AtoC, EK_c, src, result, target):
     # 这里开始使用传数据
