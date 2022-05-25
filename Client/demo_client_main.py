@@ -16,7 +16,7 @@ class MainWindow(demo_MainWindow_logic.MainWindow_Logic):
 
     def connect(self):
         super(MainWindow, self).connect()
-        self.pushButton_register.clicked.connect(self.C_AS_Register())
+        self.pushButton_register.clicked.connect(self.C_AS_Register)
         self.pushButton_login.clicked.connect(self.Kerberos)
 
 
