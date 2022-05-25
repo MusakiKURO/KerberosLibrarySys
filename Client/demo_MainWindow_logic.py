@@ -131,7 +131,7 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
         str_msg_orign = json.dumps(dict_msg_orign)
         HMAC = generate_password_hash(str_msg_orign)
         dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
-                          'data_msg': {'tick_v': ST,
+                          'data_msg': {'ticket_V': ST,
                                        'Authenticator': DES_call(json.dumps({'ID_c': ID_c, 'AD_c': AD_c, 'TS_5': TS_5}),
                                                                  EKc_v, 0)},
                           'HMAC': RSA_call(HMAC, C_n, C_d, 0)}
@@ -192,6 +192,7 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
                     if not hash_check:
                         QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请注册！", QMessageBox.Yes, QMessageBox.Yes)
                     else:
+                        self.textBrowser_showtext.append(final_str_data)
                         QMessageBox.information(self, "提示", final_loads_data['data_msg']['tips'], QMessageBox.Yes,
                                                 QMessageBox.Yes)
                 if final_loads_data['control_msg']['control_result'] == '1':
@@ -208,6 +209,7 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
                     if not hash_check:
                         QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请注册！", QMessageBox.Yes, QMessageBox.Yes)
                     else:
+                        self.textBrowser_showtext.append(final_str_data)
                         QMessageBox.information(self, "提示", final_loads_data['data_msg']['tips'], QMessageBox.Yes,
                                                 QMessageBox.Yes)
         except socket.error as e:
@@ -267,6 +269,7 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
                     if not hash_check:
                         QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
                     else:
+                        self.textBrowser_showtext.append(final_str_data)
                         QMessageBox.information(self, "提示", "AS认证通过！", QMessageBox.Yes, QMessageBox.Yes)
                         TGT = final_loads_data['data_msg']['ticket_TGS']
                         EKc_tgs = final_loads_data['data_msg']['EKc_tgs']
@@ -282,6 +285,7 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
                     if not hash_check:
                         QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
                     else:
+                        self.textBrowser_showtext.append(final_str_data)
                         QMessageBox.information(self, "提示", final_loads_data['data_msg']['tips'], QMessageBox.Yes,
                                                 QMessageBox.Yes)
                 ###
@@ -345,6 +349,7 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
                     if not hash_check:
                         QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
                     else:
+                        self.textBrowser_showtext.append(final_str_data)
                         QMessageBox.information(self, "提示", "TGS认证通过！", QMessageBox.Yes, QMessageBox.Yes)
                         ST = final_loads_data['data_msg']['ticket_V']
                         EKc_v = final_loads_data['data_msg']['EKc_v']
@@ -359,6 +364,7 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
                     if not hash_check:
                         QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
                     else:
+                        self.textBrowser_showtext.append(final_str_data)
                         QMessageBox.information(self, "提示", final_loads_data['data_msg']['tips'], QMessageBox.Yes,
                                                 QMessageBox.Yes)
         except socket.error as e:
@@ -412,6 +418,7 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
                     if not hash_check:
                         QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
                     else:
+                        self.textBrowser_showtext.append(final_str_data)
                         TS_6_str = final_loads_data['data_msg']['TS_6']
                         TS_6_dt = datetime.strptime(TS_6_str, '%Y-%m-%d %H:%M:%S')
                         TS_5_dt = datetime.strptime(TS_5_str, '%Y-%m-%d %H:%M:%S')
