@@ -15,8 +15,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import json
 import socket
 import sys
+import time
 from datetime import datetime, timedelta
-import logging
 
 # 要连接的目标IP和Port
 # AS
@@ -154,16 +154,16 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
     def C_AS_Register(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((AS_IP, AS_Port))
-
+        ###
         print('选择了注册')
-
+        ###
         try:
             # 发送数据
             send_data = self.generate_msg_to_AS_register('00', '0', '00000', str(self.lineEdit_username.text()),
                                                          str(self.lineEdit_passwd.text()))
             self.socket.sendall(send_data.encode('utf-8'))
             ###
-            print('注册的数据已经发送')
+            print('数据已发送')
             ###
             # 接收数据,将收到的数据拼接起来
             total_data = bytes()
@@ -174,7 +174,7 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
                     break
             if total_data:
                 ###
-                print('收到数据')
+                print('已收到数据')
                 ###
                 final_str_data = total_data.decode('utf-8')
                 final_loads_data = json.loads(final_str_data)
@@ -218,15 +218,24 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
             self.socket.close()
 
     def C_AS_Kerberos(self):
+        ###
+        print('向AS申请服务开始')
+        ###
         global TGT
         global EKc_tgs
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((AS_IP, AS_Port))
+        ###
+        print('成功连接AS')
+        ###
         try:
             # 发送数据
             send_data = self.generate_msg_to_AS_Kerberos('00', '0', '00001', str(self.lineEdit_username.text()), 'TGS',
                                                          datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.socket.sendall(send_data.encode('utf-8'))
+            ###
+            print('数据已发送')
+            ###
             # 接收数据,将收到的数据拼接起来
             total_data = bytes()
             while True:
@@ -235,6 +244,9 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
                 if len(recv_data) < 1024:
                     break
             if total_data:
+                ###
+                print('已收到数据')
+                ###
                 # 解密来自AS的消息
                 final_str_data = DES_call(total_data.decode('utf-8'), str(self.lineEdit_passwd.text()), 1)
                 final_loads_data = json.loads(final_str_data)
@@ -281,12 +293,18 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
             self.socket.close()
 
     def C_TGS_Kerberos(self):
+        ###
+        print('向TGS申请服务开始')
+        ###
         global TGT
         global EKc_tgs
         global ST
         global EKc_v
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((TGS_IP, TGS_Port))
+        ###
+        print('成功连接TGS')
+        ###
         try:
             # 发送数据
             send_data = self.generate_msg_to_TGS_Kerberos('00', '0', '00010', 'S', TGT,
@@ -294,6 +312,9 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
                                                           get_host_ip(),
                                                           datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.socket.sendall(send_data.encode('utf-8'))
+            ###
+            print('数据已发送')
+            ###
             # 接收数据,将收到的数据拼接起来
             total_data = bytes()
             while True:
@@ -302,6 +323,9 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
                 if len(recv_data) < 1024:
                     break
             if total_data:
+                ###
+                print('已收到数据')
+                ###
                 final_str_data = DES_call(total_data.decode('utf-8'), EKc_tgs, 1)
                 final_loads_data = json.loads(final_str_data)
                 if final_loads_data['control_msg']['control_result'] == '0':
@@ -345,16 +369,25 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
             self.socket.close()
 
     def C_S_Kerberos(self):
+        ###
+        print('向S申请服务开始')
+        ###
         global ST
         global EKc_v
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((S_IP, S_Port))
+        ###
+        print('成功连接S')
+        ###
         TS_5_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         try:
             # 发送数据
             send_data = self.generate_msg_to_S_Kerberos('00', '0', '00011', ST, str(self.lineEdit_username.text()),
                                                         get_host_ip(), TS_5_str)
             self.socket.sendall(send_data.encode('utf-8'))
+            ###
+            print('数据已发送')
+            ###
             # 接收数据,将收到的数据拼接起来
             total_data = bytes()
             while True:
@@ -363,6 +396,9 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
                 if len(recv_data) < 1024:
                     break
             if total_data:
+                ###
+                print('已收到数据')
+                ###
                 final_str_data = DES_call(total_data.decode('utf-8'), EKc_v, 1)
                 final_loads_data = json.loads(final_str_data)
                 if final_loads_data['control_msg']['control_result'] == '0':
@@ -389,6 +425,13 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
             print("Other exception: %s" % str(e))
         finally:
             self.socket.close()
+
+    def Kerberos(self):
+        self.C_AS_Kerberos()
+        time.sleep(1)
+        self.C_TGS_Kerberos()
+        time.sleep(1)
+        self.C_S_Kerberos()
 
 
 if __name__ == '__main__':
