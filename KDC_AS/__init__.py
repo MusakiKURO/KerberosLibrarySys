@@ -30,18 +30,18 @@ def create_Thread(sock, addr):
     msg_data = json.loads(data)
     # file = open("from_client.json", 'w')
     # file.write(msg_data)
-    msg_CtoA = msgCtoA(["data_msg"]["ID_c"], ["data_msg"]["ID_tgs"], ["data_msg"]["TS_1"])
 
     EK_c = "22222222"  # 从数据库中获取，作为参数向下传递
 
+    TS_2 = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     if msg_data["control_msg"]["control_target"] == "00001":
+        msg_CtoA = msgCtoA(["data_msg"]["ID_c"], ["data_msg"]["ID_tgs"], ["data_msg"]["TS_1"])
         # 验证时钟同步
-        TS_2 = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        # difference = (datetime.strptime(msg_CtoA.ts_1, "%Y-%m-%d %H:%M:%S") - datetime.strptime(TS_2, "%Y-%m-%d
-        # %H:%M:%S")) print(difference)
         if datetime.strptime(msg_CtoA.ts_1, "%Y-%m-%d %H:%M:%S") - datetime.strptime(TS_2, "%Y-%m-%d %H:%M:%S") < timedelta(minutes=5):
             msg_AtoC = create_msgAtoC(msg_CtoA, TS_2, addr)
             send_msg(msg_AtoC, EK_c, "01", "0", "00001")
+    elif msg_data["control_msg"]["control_target"] == "00000":
+        print("")
 
 
 def create_msgAtoC(msg_CtoA, TS_2, addr):
@@ -55,14 +55,14 @@ def create_msgAtoC(msg_CtoA, TS_2, addr):
             "TS_2": ticket_temp.ts_2,
             "LifeTime_2": ticket_temp.lifetime_2
         }
-    msg_AtoC_tmp = msgAtoC(msg_CtoA, TS_2, ticket_temp.EKc_tgs)
+    msg_AtoC_tmp = msgAtoC(TS_2, myas.EKtgs)
     msg_AtoC = \
         {
             "EKc_tgs": msg_AtoC_tmp.Ekc_tgs,
             "ID_tgs": msg_AtoC_tmp.id_tgs,
             "TS_2": msg_AtoC_tmp.ts_2,
             "LifeTime_2": msg_AtoC_tmp.lifetime_2,
-            "ticket_TGS": DES_call(json.dumps(ticket_TGS), ticket_temp.EKc_tgs, 0)  # 加密
+            "ticket_TGS": DES_call(json.dumps(ticket_TGS), myas.EKtgs, 0)  # 加密
         }
     return json.dumps(msg_AtoC)
 

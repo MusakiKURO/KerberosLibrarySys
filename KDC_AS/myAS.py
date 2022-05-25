@@ -3,6 +3,8 @@ import json
 
 from werkzeug.security import generate_password_hash
 
+from RSA.demo_RSA import RSA_call
+
 
 class myAS:
 
@@ -10,7 +12,6 @@ class myAS:
         self.pKey = None
         self.sKey = None
         self.EKtgs = "11111111"
-        self.sendmsg = None
 
 
 class msgCtoA:
@@ -32,7 +33,6 @@ class ticket_tgs:
 
 class msgAtoC:
     def __init__(self, msg_CtoA,TS_2,EKc_tgs):
-        self.EKc = msg_CtoA.EKc
         self.lifetime_2 = (datetime.datetime.now()+datetime.timedelta(minutes=5)).strftime("%Y-%m-%d %H:%M:%S")
         self.id_tgs = "TGS"
         self.Ekc_tgs = EKc_tgs

@@ -5,7 +5,7 @@
 # @Software: PyCharm
 import socket
 import datetime
-from KerberosLibrarySys.DES.demo_DES import *
+from DES.demo_DES import *
 from generate_msg import *
 
 test_key = '0kLllffV'
@@ -20,6 +20,8 @@ TGS_ip = '127.0.0.1'
 TGS_port = 7789
 Server_ip = '127.0.0.1'
 Server_port = 7790
+
+
 
 if __name__ == "__main__":
     # 链接AS
