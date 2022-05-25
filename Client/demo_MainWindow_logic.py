@@ -419,7 +419,7 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
                         QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
                     else:
                         self.textBrowser_showtext.append(final_str_data)
-                        TS_6_str = final_loads_data['data_msg']['TS_6']
+                        TS_6_str = DES_call(final_loads_data['data_msg']['TS_6'], EKc_v, 1)
                         TS_6_dt = datetime.strptime(TS_6_str, '%Y-%m-%d %H:%M:%S')
                         TS_5_dt = datetime.strptime(TS_5_str, '%Y-%m-%d %H:%M:%S')
                         if TS_5_dt + timedelta(seconds=1) == TS_6_dt:
