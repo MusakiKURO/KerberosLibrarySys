@@ -1,0 +1,79 @@
+# @Time    : 2022/5/19 15:24
+# @Author  : Nisky
+# @File    : demo_reader_Dialog_logic.py
+# @Software: PyCharm
+from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtCore import QCoreApplication
+from PyQt5.QtWidgets import QMessageBox, QMainWindow, QDialog
+from Client import demo_reader_Dialog
+from Client.demo_reader_Dialog import Ui_Dialog
+from DES.demo_DES import DES_call
+from RSA.demo_RSA import RSA_call
+from werkzeug.security import generate_password_hash, check_password_hash
+import json
+import socket
+import sys
+import time
+from datetime import datetime, timedelta
+
+# C
+C_n = 3951270249045146953972943163348434942592764989560360906533269897277080404934010181112385167732070275357806027491762234996305583674911212807857840660608406910051955297329683233106234207322044758397760274898933802535462100186118312888112180532109135970587764285970799040141296520625252128054797411575140828014980501308928204513652682136220524500675713399801045198810206992806199335791852827154930372510398253049468928422550127057850688190116699758746503012249254107915609637655541305024737077987890330855253602741330884459042041448515721767143012038195427206379154406467638677589417430783480145088864002792702243711871
+C_e = 65537
+C_d = 2757273636260153892397342107350259780423194855845766289858950397671128036969148536137032681933728579320666845526660699957063082811308337204049050565811744102070678725190020954569898057638571691346945552160656416853903721986232949376871604624486124103069872348296421143823823394078988290161741459382729076515559052021058495642905456516812473319945752701566826454688598762391217175129649908066837336480981333656504068536290700516972492847182109009403521746900589327304409884664070941216444164761014904237097127620724122770288299493272459500309150609158525585771453450568861932542872871536494818060418219971795890204521
+
+# C和S通信要用到的对称密钥
+global EKc_v
+
+
+class Dialog_Logic(demo_reader_Dialog.Ui_Dialog):
+    def __init__(self):
+        super(Dialog_Logic, self).__init__()
+
+    def generate_msg_to_S_Search(self, src, result, target, select, content):
+        dict_msg_orign = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
+                          'data_msg': DES_call({'book_select': select, 'book_content': content}, EKc_v, 0)}
+        str_msg_orign = json.dumps(dict_msg_orign)
+        HMAC = generate_password_hash(str_msg_orign)
+        dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
+                          'data_msg': DES_call({'book_select': select, 'book_content': content}, EKc_v, 0),
+                          'HMAC': RSA_call(HMAC, C_n, C_d, 0)}
+        str_msg_final = json.dumps(dict_msg_final)
+        self.textBrowser_showtext.append(str_msg_final)
+        return str_msg_final
+
+    def generate_msg_to_S_Order(self, src, result, target, book_id):
+        dict_msg_orign = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
+                          'data_msg': DES_call({'book_id': book_id}, EKc_v, 0)}
+        str_msg_orign = json.dumps(dict_msg_orign)
+        HMAC = generate_password_hash(str_msg_orign)
+        dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
+                          'data_msg': DES_call({'book_id': book_id}, EKc_v, 0),
+                          'HMAC': RSA_call(HMAC, C_n, C_d, 0)}
+        str_msg_final = json.dumps(dict_msg_final)
+        self.textBrowser_showtext.append(str_msg_final)
+        return str_msg_final
+
+    def generate_msg_to_S_Borrow(self, src, result, target, book_id):
+        dict_msg_orign = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
+                          'data_msg': DES_call({'book_id': book_id}, EKc_v, 0)}
+        str_msg_orign = json.dumps(dict_msg_orign)
+        HMAC = generate_password_hash(str_msg_orign)
+        dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
+                          'data_msg': DES_call({'book_id': book_id}, EKc_v, 0),
+                          'HMAC': RSA_call(HMAC, C_n, C_d, 0)}
+        str_msg_final = json.dumps(dict_msg_final)
+        self.textBrowser_showtext.append(str_msg_final)
+        return str_msg_final
+
+    def generate_msg_to_S_Return(self, src, result, target, book_id):
+        dict_msg_orign = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
+                          'data_msg': DES_call({'book_id': book_id}, EKc_v, 0)}
+        str_msg_orign = json.dumps(dict_msg_orign)
+        HMAC = generate_password_hash(str_msg_orign)
+        dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
+                          'data_msg': DES_call({'book_id': book_id}, EKc_v, 0),
+                          'HMAC': RSA_call(HMAC, C_n, C_d, 0)}
+        str_msg_final = json.dumps(dict_msg_final)
+        self.textBrowser_showtext.append(str_msg_final)
+        return str_msg_final
+    

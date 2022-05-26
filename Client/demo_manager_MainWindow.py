@@ -1,3 +1,8 @@
+# coding=utf-8
+# @Time    : 2022/5/25 20:43
+# @Author  : Nisky
+# @File    : demo_manager_MainWindow.py
+# @Software: PyCharm
 # -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'demo_reader_MainWindow.ui'
@@ -149,7 +154,7 @@ class Ui_MainWindow(QMainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "KerberosLibrarySys"))
         self.pushButton_register.setText(_translate("MainWindow", "注册"))
         self.pushButton_login.setText(_translate("MainWindow", "登录"))
-        self.label_sysname.setText(_translate("MainWindow", "图书管理借阅系统"+"读者注册登录界面"))
+        self.label_sysname.setText(_translate("MainWindow", "图书管理借阅系统"+"管理员注册登录界面"))
         self.label_passwd.setText(_translate("MainWindow", "用户名"))
         self.label_username.setText(_translate("MainWindow", "密码"))
         self.label_tip.setText(_translate("MainWindow", "若要使用该系统，请输入您的账号和对应的密码，"+"若没有账号，请选择注册。"))

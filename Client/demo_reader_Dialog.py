@@ -9,10 +9,16 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QAbstractItemView, QHeaderView, QMenu, QTableWidgetItem
+from PyQt5.QtCore import QCoreApplication
+from PyQt5.QtWidgets import QAbstractItemView, QHeaderView, QMenu, QTableWidgetItem, QApplication
+import sys
 
 
 class Ui_Dialog(QtWidgets.QDialog):
+    def __init__(self):
+        super(Ui_Dialog, self).__init__()
+        self.setupUi(self)
+        
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(698, 425)
@@ -66,25 +72,25 @@ class Ui_Dialog(QtWidgets.QDialog):
         self.gridLayout.addItem(spacerItem1, 4, 2, 1, 1)
         spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem2, 4, 0, 1, 1)
-        self.label_3 = QtWidgets.QLabel(Dialog)
-        self.label_3.setObjectName("label_3")
-        self.gridLayout.addWidget(self.label_3, 3, 1, 1, 1)
+        self.label_result = QtWidgets.QLabel(Dialog)
+        self.label_result.setObjectName("label_result")
+        self.gridLayout.addWidget(self.label_result, 3, 1, 1, 1)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.label = QtWidgets.QLabel(Dialog)
-        self.label.setObjectName("label")
-        self.horizontalLayout.addWidget(self.label)
-        self.comboBox = QtWidgets.QComboBox(Dialog)
-        self.comboBox.setObjectName("comboBox")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.horizontalLayout.addWidget(self.comboBox)
+        self.label_select = QtWidgets.QLabel(Dialog)
+        self.label_select.setObjectName("label_select")
+        self.horizontalLayout.addWidget(self.label_select)
+        self.comboBox_select = QtWidgets.QComboBox(Dialog)
+        self.comboBox_select.setObjectName("comboBox_select")
+        self.comboBox_select.addItem("")
+        self.comboBox_select.addItem("")
+        self.comboBox_select.addItem("")
+        self.horizontalLayout.addWidget(self.comboBox_select)
         spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem3)
-        self.label_2 = QtWidgets.QLabel(Dialog)
-        self.label_2.setObjectName("label_2")
-        self.horizontalLayout.addWidget(self.label_2)
+        self.label_content = QtWidgets.QLabel(Dialog)
+        self.label_content.setObjectName("label_content")
+        self.horizontalLayout.addWidget(self.label_content)
         self.lineEdit = QtWidgets.QLineEdit(Dialog)
         self.lineEdit.setObjectName("lineEdit")
         self.horizontalLayout.addWidget(self.lineEdit)
@@ -114,10 +120,10 @@ class Ui_Dialog(QtWidgets.QDialog):
         font_1.setUnderline(True)
         font_1.setWeight(75)
         font_1.setStrikeOut(False)
-        self.label.setFont(font_1)
-        self.label_2.setFont(font_1)
-        self.label_3.setFont(font)
-        self.label_3.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_select.setFont(font_1)
+        self.label_content.setFont(font_1)
+        self.label_result.setFont(font)
+        self.label_result.setAlignment(QtCore.Qt.AlignCenter)
         # 对TableWidget控件的修改
         # 让表格铺满整个QTableWidget控件
         self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
@@ -188,12 +194,12 @@ class Ui_Dialog(QtWidgets.QDialog):
         item.setText(_translate("Dialog", "出版社"))
         item = self.tableWidget.horizontalHeaderItem(4)
         item.setText(_translate("Dialog", "当前库存"))
-        self.label_3.setText(_translate("Dialog", "搜索结果展示"))
-        self.label.setText(_translate("Dialog", "搜索条件"))
-        self.comboBox.setItemText(0, _translate("Dialog", "书号"))
-        self.comboBox.setItemText(1, _translate("Dialog", "书名"))
-        self.comboBox.setItemText(2, _translate("Dialog", "作者"))
-        self.label_2.setText(_translate("Dialog", "搜索内容"))
+        self.label_result.setText(_translate("Dialog", "搜索结果展示"))
+        self.label_select.setText(_translate("Dialog", "搜索条件"))
+        self.comboBox_select.setItemText(0, _translate("Dialog", "书号"))
+        self.comboBox_select.setItemText(1, _translate("Dialog", "书名"))
+        self.comboBox_select.setItemText(2, _translate("Dialog", "作者"))
+        self.label_content.setText(_translate("Dialog", "搜索内容"))
         self.pushButton.setText(_translate("Dialog", "查找"))
 
     # 生成右键菜单
@@ -223,3 +229,11 @@ class Ui_Dialog(QtWidgets.QDialog):
                 print('你选了选项三，当前行文字内容是：', self.tableWidget.item(row_num, 0).text(),
                       self.tableWidget.item(row_num, 1).text(),
                       self.tableWidget.item(row_num, 2).text())
+
+
+if __name__ == '__main__':
+    QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+    app = QApplication(sys.argv)
+    ui = Ui_Dialog()
+    ui.show()
+    sys.exit(app.exec_())

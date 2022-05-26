@@ -1,14 +1,14 @@
 # coding=utf-8
 # @Time    : 2022/5/19 15:24
 # @Author  : Nisky
-# @File    : demo_MainWindow_logic.py
+# @File    : demo_reader_MainWindow_logic.py
 # @Software: PyCharm
 
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import QCoreApplication
-from PyQt5.QtWidgets import QMessageBox, QMainWindow
+from PyQt5.QtWidgets import QMessageBox, QApplication
 from Client import demo_reader_MainWindow
-from Client.demo_reader_MainWindow import Ui_MainWindow
+from Client import demo_reader_Dialog
 from DES.demo_DES import DES_call
 from RSA.demo_RSA import RSA_call
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -20,8 +20,8 @@ from datetime import datetime, timedelta
 
 # 要连接的目标IP和Port
 # AS
-AS_IP = ''
-AS_Port = None
+AS_IP = '127.0.0.1'
+AS_Port = 7788
 # TGS
 TGS_IP = ''
 TGS_Port = None
@@ -73,13 +73,9 @@ def get_host_ip():
     return ip
 
 
-class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
+class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_Dialog):
     def __init__(self):
         super(MainWindow_Logic, self).__init__()
-
-        QMainWindow.__init__(self)
-        self.main_ui = Ui_MainWindow()
-        self.main_ui.setupUi(self)
         # 创建socket
         self.socket = None
 
@@ -134,18 +130,6 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
                           'data_msg': {'ticket_V': ST,
                                        'Authenticator': DES_call(json.dumps({'ID_c': ID_c, 'AD_c': AD_c, 'TS_5': TS_5}),
                                                                  EKc_v, 0)},
-                          'HMAC': RSA_call(HMAC, C_n, C_d, 0)}
-        str_msg_final = json.dumps(dict_msg_final)
-        self.textBrowser_showtext.append(str_msg_final)
-        return str_msg_final
-
-    def generate_msg_to_S_Search(self, src, result, target, select, content):
-        dict_msg_orign = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
-                          'data_msg': {'book_select': select, 'book_content': content}}
-        str_msg_orign = json.dumps(dict_msg_orign)
-        HMAC = generate_password_hash(str_msg_orign)
-        dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
-                          'data_msg': {'book_select': select, 'book_content': content},
                           'HMAC': RSA_call(HMAC, C_n, C_d, 0)}
         str_msg_final = json.dumps(dict_msg_final)
         self.textBrowser_showtext.append(str_msg_final)
@@ -242,13 +226,17 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
             total_data = bytes()
             while True:
                 recv_data = self.socket.recv(1024)
+                # QApplication.processEvents()
                 total_data += recv_data
                 if len(recv_data) < 1024:
                     break
             if total_data:
                 ###
                 print('已收到数据')
+                print(total_data)
+                print(total_data.decode('utf-8'))
                 ###
+
                 # 解密来自AS的消息
                 final_str_data = DES_call(total_data.decode('utf-8'), str(self.lineEdit_passwd.text()), 1)
                 final_loads_data = json.loads(final_str_data)
@@ -288,6 +276,8 @@ class MainWindow_Logic(demo_reader_MainWindow.Ui_MainWindow):
                         self.textBrowser_showtext.append(final_str_data)
                         QMessageBox.information(self, "提示", final_loads_data['data_msg']['tips'], QMessageBox.Yes,
                                                 QMessageBox.Yes)
+                        
+
                 ###
         except socket.error as e:
             print("Socket error: %s" % str(e))
@@ -446,4 +436,5 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     ui = MainWindow_Logic()
     ui.show()
+    # ui.C_AS_Kerberos()
     sys.exit(app.exec_())
