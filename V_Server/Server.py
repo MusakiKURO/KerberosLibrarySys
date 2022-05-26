@@ -12,6 +12,7 @@ from control_target import control_target
 # 创建线程类
 class MyThread(threading.Thread):
     def __init__(self, func, argc, name=''):
+        threading.Thread.__init__(self)
         self.name = name
         self.func = func
         self.argc = argc
@@ -33,9 +34,9 @@ class MyThread(threading.Thread):
 
 # 创建消息类
 class msg:
-    def __init__(self, con_msg, data_msg='', HMAC=''):
-        self.con_msg = con_msg
-        self.data_msg = data_msg
+    def __init__(self, con_msg_dt, data_msg_dt='', HMAC=''):
+        self.con_msg = con_msg_dt
+        self.data_msg = data_msg_dt
         self.HMAC = HMAC
 
     def create_msg(self):
@@ -113,7 +114,7 @@ def V_to_C_Ker(sock):
                     data_msg_dt = TS_6.create_Kdata_msg()
                     control_msg = con_msg('0', control_target[0])
                     con_msg_dt = control_msg.create_con_msg()
-                    str_msg_final = json.dumps(create_send_msg(con_msg_dt, data_msg_dt))
+                    str_msg_final = json.dumps(create_send_msg(con_msg_dt, data_msg_dt, EKc_v))
                     sock.sendall(str_msg_final)
                 else:
                     Ker_error = data_msg()
@@ -121,11 +122,11 @@ def V_to_C_Ker(sock):
                     data_msg_dt = Ker_error.create_data_msg()
                     control_msg = con_msg('1', control_target[0])
                     con_msg_dt = control_msg.create_con_msg()
-                    str_msg_final = json.dumps(create_send_msg(con_msg_dt, data_msg_dt))
+                    str_msg_final = json.dumps(create_send_msg(con_msg_dt, data_msg_dt, EKc_v))
                     sock.sendall(str_msg_final)
 
 
-def create_send_msg(control_msg_dt, data_msg_dt):
+def create_send_msg(control_msg_dt, data_msg_dt, EKc_v):
     dict_msg_origin = {'control_msg': control_msg_dt,
                        'data_msg': DES_call(json.dumps(data_msg_dt), EKc_v, 1)}
     str_msg_origin = json.dumps(dict_msg_origin)
@@ -149,8 +150,7 @@ HOST = ''
 PORT = 21567
 ADDR = (HOST, PORT)
 BUFFSIZE = 1024
-EKtgs_v =  None
-EKc_v = None
+EKtgs_v = None
 C_n = C_e = None
 V_n = V_d = None
 # 连接

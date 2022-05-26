@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c3cfbabc-79c7-44f1-854f-b18303507d47" name="变更" comment="KDC commit2">
-      <change beforePath="$PROJECT_DIR$/KDC_AS/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/KDC_AS/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KDC_TGS/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/KDC_TGS/__init__.py" afterDir="false" />
+    <list default="true" id="c3cfbabc-79c7-44f1-854f-b18303507d47" name="变更" comment="server.1">
+      <change beforePath="$PROJECT_DIR$/V_Server/Server.py" beforeDir="false" afterPath="$PROJECT_DIR$/V_Server/Server.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -277,7 +276,21 @@
       <option name="project" value="LOCAL" />
       <updated>1653449614073</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="server.1">
+      <created>1653541985576</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1653541985576</updated>
+    </task>
+    <task id="LOCAL-00014" summary="server.1">
+      <created>1653542093876</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1653542093876</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -304,6 +317,7 @@
     <MESSAGE value="logic" />
     <MESSAGE value="KDC commit" />
     <MESSAGE value="KDC commit2" />
-    <option name="LAST_COMMIT_MESSAGE" value="KDC commit2" />
+    <MESSAGE value="server.1" />
+    <option name="LAST_COMMIT_MESSAGE" value="server.1" />
   </component>
 </project>
