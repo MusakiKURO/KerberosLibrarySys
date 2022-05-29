@@ -5,11 +5,11 @@
 # @Software: PyCharm
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import QCoreApplication
-from Client import demo_manager_MainWindow_logic
+from Client import demo_manager_logic
 import sys
 
 
-class MainWindow_Test(demo_manager_MainWindow_logic.MainWindow_Logic):
+class MainWindow_Test(demo_manager_logic.MainWindow_Logic):
     def __init__(self):
         super(MainWindow_Test, self).__init__()
         self.pushButton_register.clicked.connect(self.C_AS_Register)
