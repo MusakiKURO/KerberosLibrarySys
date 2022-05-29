@@ -25,9 +25,9 @@ def generate_msg_to_C(src, result, target, data_msg):
     str_msg_final = json.dumps(dict_msg_final)
     return str_msg_final
 
-def create_msgAtoT(EK_CtoTGS,ticket_tgs, id_v, TS_4):
-    EK_v = "33333333"  # 从数据库中获取，作为参数向下传递
-    ticket_V_tmp = ticket_v(EK_CtoTGS, ticket_tgs.id_c, ticket_tgs.ad_c, id_v, TS_4)
+def create_msgAtoT(ticket_tgs, id_v, TS_4):
+    EK_v = db.getClientEk(id_v)  # 从数据库中获取，作为参数向下传递
+    ticket_V_tmp = ticket_v( ticket_tgs.id_c, ticket_tgs.ad_c, id_v, TS_4)
     ticket_V = \
         {
             "EKc_v": ticket_V_tmp.EKc_v,
@@ -70,7 +70,7 @@ def create_Thread(sock, addr):
                                                                                              "%Y-%m-%d %H:%M:%S") < timedelta(
                 minutes=5):
             EK_CtoTGS = ticket_tgs.EKc_tgs
-            msg_TtoC = create_msgAtoT(EK_CtoTGS,ticket_tgs, msg_CtoT.id_v, TS_4)
+            msg_TtoC = create_msgAtoT(ticket_tgs, msg_CtoT.id_v, TS_4)
 
             send_msg(msg_TtoC, EK_CtoTGS, "10", "0", "00000")
 
@@ -85,7 +85,7 @@ def loadticket_tgs(ticket_TGS):
 if __name__ == "__main__":
     myTGS = myTGS()
 
-    # cursor = linkDB.link_DB()
+    db = linkDB.link_DB()
     # Create The Socket
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 

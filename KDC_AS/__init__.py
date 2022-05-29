@@ -31,7 +31,7 @@ def create_Thread(sock, addr):
     # file = open("from_client.json", 'w')
     # file.write(msg_data)
 
-    EK_c = "22222222"  # 从数据库中获取，作为参数向下传递
+    EK_c = db.getClientEk(msg_data["data_msg"]["ID_c"])  # 从数据库中获取，作为参数向下传递
 
     TS_2 = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     if msg_data["control_msg"]["control_target"] == "00001":
@@ -87,7 +87,7 @@ def send_msg(msg_AtoC, EK_c, src, result, target):
 if __name__ == "__main__":
     myas = myAS()
 
-    # cursor = linkDB.link_DB()
+    db = linkDB.link_DB()
     # Create The Socket
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 

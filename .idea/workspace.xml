@@ -4,8 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c3cfbabc-79c7-44f1-854f-b18303507d47" name="变更" comment="server.1">
-      <change beforePath="$PROJECT_DIR$/V_Server/Server.py" beforeDir="false" afterPath="$PROJECT_DIR$/V_Server/Server.py" afterDir="false" />
+    <list default="true" id="c3cfbabc-79c7-44f1-854f-b18303507d47" name="变更" comment="KDC commit3">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KDC_AS/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/KDC_AS/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KDC_AS/linkDB.py" beforeDir="false" afterPath="$PROJECT_DIR$/KDC_AS/linkDB.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KDC_TGS/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/KDC_TGS/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KDC_TGS/linkDB.py" beforeDir="false" afterPath="$PROJECT_DIR$/KDC_TGS/linkDB.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
