@@ -6,7 +6,7 @@
 # coding=utf-8
 # @Time    : 2022/5/19 15:24
 # @Author  : Nisky
-# @File    : demo_reader_MainWindow_logic.py
+# @File    : demo_reader_logic.py
 # @Software: PyCharm
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import QCoreApplication

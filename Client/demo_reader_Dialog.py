@@ -10,15 +10,11 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QCoreApplication
-from PyQt5.QtWidgets import QAbstractItemView, QHeaderView, QMenu, QTableWidgetItem, QApplication
+from PyQt5.QtWidgets import QAbstractItemView, QHeaderView, QApplication
 import sys
 
 
 class Ui_Dialog(QtWidgets.QDialog):
-    def __init__(self):
-        super(Ui_Dialog, self).__init__()
-        self.setupUi(self)
-        
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(698, 425)
@@ -26,48 +22,48 @@ class Ui_Dialog(QtWidgets.QDialog):
         self.gridLayout.setObjectName("gridLayout")
         spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem, 2, 1, 1, 1)
-        self.tableWidget = QtWidgets.QTableWidget(Dialog)
-        self.tableWidget.setFrameShape(QtWidgets.QFrame.Box)
-        self.tableWidget.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.tableWidget.setGridStyle(QtCore.Qt.SolidLine)
-        self.tableWidget.setObjectName("tableWidget")
-        self.tableWidget.setColumnCount(5)
-        self.tableWidget.setRowCount(12)
+        self.tableWidget_result = QtWidgets.QTableWidget(Dialog)
+        self.tableWidget_result.setFrameShape(QtWidgets.QFrame.Box)
+        self.tableWidget_result.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.tableWidget_result.setGridStyle(QtCore.Qt.SolidLine)
+        self.tableWidget_result.setObjectName("tableWidget_result")
+        self.tableWidget_result.setColumnCount(5)
+        self.tableWidget_result.setRowCount(12)
         item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(0, item)
+        self.tableWidget_result.setVerticalHeaderItem(0, item)
         item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(1, item)
+        self.tableWidget_result.setVerticalHeaderItem(1, item)
         item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(2, item)
+        self.tableWidget_result.setVerticalHeaderItem(2, item)
         item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(3, item)
+        self.tableWidget_result.setVerticalHeaderItem(3, item)
         item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(4, item)
+        self.tableWidget_result.setVerticalHeaderItem(4, item)
         item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(5, item)
+        self.tableWidget_result.setVerticalHeaderItem(5, item)
         item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(6, item)
+        self.tableWidget_result.setVerticalHeaderItem(6, item)
         item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(7, item)
+        self.tableWidget_result.setVerticalHeaderItem(7, item)
         item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(8, item)
+        self.tableWidget_result.setVerticalHeaderItem(8, item)
         item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(9, item)
+        self.tableWidget_result.setVerticalHeaderItem(9, item)
         item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(10, item)
+        self.tableWidget_result.setVerticalHeaderItem(10, item)
         item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(11, item)
+        self.tableWidget_result.setVerticalHeaderItem(11, item)
         item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(0, item)
+        self.tableWidget_result.setHorizontalHeaderItem(0, item)
         item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(1, item)
+        self.tableWidget_result.setHorizontalHeaderItem(1, item)
         item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(2, item)
+        self.tableWidget_result.setHorizontalHeaderItem(2, item)
         item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(3, item)
+        self.tableWidget_result.setHorizontalHeaderItem(3, item)
         item = QtWidgets.QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(4, item)
-        self.gridLayout.addWidget(self.tableWidget, 4, 1, 1, 1)
+        self.tableWidget_result.setHorizontalHeaderItem(4, item)
+        self.gridLayout.addWidget(self.tableWidget_result, 4, 1, 1, 1)
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem1, 4, 2, 1, 1)
         spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
@@ -91,14 +87,14 @@ class Ui_Dialog(QtWidgets.QDialog):
         self.label_content = QtWidgets.QLabel(Dialog)
         self.label_content.setObjectName("label_content")
         self.horizontalLayout.addWidget(self.label_content)
-        self.lineEdit = QtWidgets.QLineEdit(Dialog)
-        self.lineEdit.setObjectName("lineEdit")
-        self.horizontalLayout.addWidget(self.lineEdit)
+        self.lineEdit_content = QtWidgets.QLineEdit(Dialog)
+        self.lineEdit_content.setObjectName("lineEdit_content")
+        self.horizontalLayout.addWidget(self.lineEdit_content)
         spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem4)
-        self.pushButton = QtWidgets.QPushButton(Dialog)
-        self.pushButton.setObjectName("pushButton")
-        self.horizontalLayout.addWidget(self.pushButton)
+        self.pushButton_search = QtWidgets.QPushButton(Dialog)
+        self.pushButton_search.setObjectName("pushButton_search")
+        self.horizontalLayout.addWidget(self.pushButton_search)
         self.gridLayout.addLayout(self.horizontalLayout, 1, 1, 1, 1)
         spacerItem5 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem5, 0, 1, 1, 1)
@@ -126,32 +122,18 @@ class Ui_Dialog(QtWidgets.QDialog):
         self.label_result.setAlignment(QtCore.Qt.AlignCenter)
         # 对TableWidget控件的修改
         # 让表格铺满整个QTableWidget控件
-        self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tableWidget_result.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         # 将表格变为禁止编辑
-        self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tableWidget_result.setEditTriggers(QAbstractItemView.NoEditTriggers)
         # 表格填满窗口
-        self.tableWidget.resizeColumnsToContents()
-        self.tableWidget.resizeRowsToContents()
+        self.tableWidget_result.resizeColumnsToContents()
+        self.tableWidget_result.resizeRowsToContents()
         # 解决表头与第一行之间网格线不显示
-        self.tableWidget.setStyleSheet("QHeaderView::section{background:skyblue;color: black;}")
+        self.tableWidget_result.setStyleSheet("QHeaderView::section{background:skyblue;color: black;}")
         # 允许右键产生菜单
-        self.tableWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.tableWidget_result.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         # 将右键菜单绑定到槽函数generateMenu
-        self.tableWidget.customContextMenuRequested.connect(self.generateMenu)
-
-        # # 添加数据到指定行列
-        # newItem = QTableWidgetItem("张三")
-        # self.tableWidget.setItem(0, 0, newItem)
-        # newItem = QTableWidgetItem("男")
-        # self.tableWidget.setItem(0, 1, newItem)
-        # newItem = QTableWidgetItem("160")
-        # self.tableWidget.setItem(0, 2, newItem)
-        # newItem = QTableWidgetItem("李四")
-        # self.tableWidget.setItem(1, 0, newItem)
-        # newItem = QTableWidgetItem("女")
-        # self.tableWidget.setItem(1, 1, newItem)
-        # newItem = QTableWidgetItem("120")
-        # self.tableWidget.setItem(1, 2, newItem)
+        self.tableWidget_result.customContextMenuRequested.connect(self.generateMenu)
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -159,40 +141,40 @@ class Ui_Dialog(QtWidgets.QDialog):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.tableWidget.setSortingEnabled(False)
-        item = self.tableWidget.verticalHeaderItem(0)
+        self.tableWidget_result.setSortingEnabled(False)
+        item = self.tableWidget_result.verticalHeaderItem(0)
         item.setText(_translate("Dialog", "1"))
-        item = self.tableWidget.verticalHeaderItem(1)
+        item = self.tableWidget_result.verticalHeaderItem(1)
         item.setText(_translate("Dialog", "2"))
-        item = self.tableWidget.verticalHeaderItem(2)
+        item = self.tableWidget_result.verticalHeaderItem(2)
         item.setText(_translate("Dialog", "3"))
-        item = self.tableWidget.verticalHeaderItem(3)
+        item = self.tableWidget_result.verticalHeaderItem(3)
         item.setText(_translate("Dialog", "4"))
-        item = self.tableWidget.verticalHeaderItem(4)
+        item = self.tableWidget_result.verticalHeaderItem(4)
         item.setText(_translate("Dialog", "5"))
-        item = self.tableWidget.verticalHeaderItem(5)
+        item = self.tableWidget_result.verticalHeaderItem(5)
         item.setText(_translate("Dialog", "6"))
-        item = self.tableWidget.verticalHeaderItem(6)
+        item = self.tableWidget_result.verticalHeaderItem(6)
         item.setText(_translate("Dialog", "7"))
-        item = self.tableWidget.verticalHeaderItem(7)
+        item = self.tableWidget_result.verticalHeaderItem(7)
         item.setText(_translate("Dialog", "8"))
-        item = self.tableWidget.verticalHeaderItem(8)
+        item = self.tableWidget_result.verticalHeaderItem(8)
         item.setText(_translate("Dialog", "9"))
-        item = self.tableWidget.verticalHeaderItem(9)
+        item = self.tableWidget_result.verticalHeaderItem(9)
         item.setText(_translate("Dialog", "10"))
-        item = self.tableWidget.verticalHeaderItem(10)
+        item = self.tableWidget_result.verticalHeaderItem(10)
         item.setText(_translate("Dialog", "11"))
-        item = self.tableWidget.verticalHeaderItem(11)
+        item = self.tableWidget_result.verticalHeaderItem(11)
         item.setText(_translate("Dialog", "12"))
-        item = self.tableWidget.horizontalHeaderItem(0)
+        item = self.tableWidget_result.horizontalHeaderItem(0)
         item.setText(_translate("Dialog", "书号"))
-        item = self.tableWidget.horizontalHeaderItem(1)
+        item = self.tableWidget_result.horizontalHeaderItem(1)
         item.setText(_translate("Dialog", "书名"))
-        item = self.tableWidget.horizontalHeaderItem(2)
+        item = self.tableWidget_result.horizontalHeaderItem(2)
         item.setText(_translate("Dialog", "作者"))
-        item = self.tableWidget.horizontalHeaderItem(3)
+        item = self.tableWidget_result.horizontalHeaderItem(3)
         item.setText(_translate("Dialog", "出版社"))
-        item = self.tableWidget.horizontalHeaderItem(4)
+        item = self.tableWidget_result.horizontalHeaderItem(4)
         item.setText(_translate("Dialog", "当前库存"))
         self.label_result.setText(_translate("Dialog", "搜索结果展示"))
         self.label_select.setText(_translate("Dialog", "搜索条件"))
@@ -200,35 +182,7 @@ class Ui_Dialog(QtWidgets.QDialog):
         self.comboBox_select.setItemText(1, _translate("Dialog", "书名"))
         self.comboBox_select.setItemText(2, _translate("Dialog", "作者"))
         self.label_content.setText(_translate("Dialog", "搜索内容"))
-        self.pushButton.setText(_translate("Dialog", "查找"))
-
-    # 生成右键菜单
-    def generateMenu(self, pos):
-        # 计算有多少条数据，默认-1,
-        row_num = -1
-        for i in self.tableWidget.selectionModel().selection().indexes():
-            row_num = i.row()
-
-        # 表格中只有两条有效数据，所以只在前两行支持右键弹出菜单
-        if row_num < 2:
-            menu = QMenu()
-            item1 = menu.addAction(u'预约')
-            item2 = menu.addAction(u'借阅')
-            item3 = menu.addAction(u'归还')
-            action = menu.exec_(self.tableWidget.mapToGlobal(pos))
-            # 显示选中行的数据文本
-            if action == item1:
-                print('你选了选项一，当前行文字内容是：', self.tableWidget.item(row_num, 0).text(),
-                      self.tableWidget.item(row_num, 1).text(),
-                      self.tableWidget.item(row_num, 2).text())
-            if action == item2:
-                print('你选了选项二，当前行文字内容是：', self.tableWidget.item(row_num, 0).text(),
-                      self.tableWidget.item(row_num, 1).text(),
-                      self.tableWidget.item(row_num, 2).text())
-            if action == item3:
-                print('你选了选项三，当前行文字内容是：', self.tableWidget.item(row_num, 0).text(),
-                      self.tableWidget.item(row_num, 1).text(),
-                      self.tableWidget.item(row_num, 2).text())
+        self.pushButton_search.setText(_translate("Dialog", "查找"))
 
 
 if __name__ == '__main__':
