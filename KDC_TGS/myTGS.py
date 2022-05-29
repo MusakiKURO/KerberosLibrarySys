@@ -1,5 +1,6 @@
 import datetime
 import json
+from random import random
 
 from werkzeug.security import generate_password_hash
 
@@ -33,7 +34,12 @@ class ticket_tgs:
 
 class ticket_v:
     def __init__(self, id_c, ad_c, id_v, ts_4):
-        self.EKc_v = "tgs生成"
+        seed = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        sa = []
+        for i in range(8):
+            sa.append(random.choice(seed))
+        result = ''.join(sa)
+        self.EKc_v = result
         self.id_c = id_c
         self.ad_c = ad_c
         self.id_v = id_v

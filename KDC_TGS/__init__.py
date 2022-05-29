@@ -14,6 +14,7 @@ from KDC_TGS.myTGS import *
 SERVER_IP = '127.0.0.1'
 SERVER_PORT = 11230
 
+
 def generate_msg_to_C(src, result, target, data_msg):
     dict_msg_orign = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
                       'data_msg': data_msg}
@@ -25,9 +26,10 @@ def generate_msg_to_C(src, result, target, data_msg):
     str_msg_final = json.dumps(dict_msg_final)
     return str_msg_final
 
+
 def create_msgAtoT(ticket_tgs, id_v, TS_4):
-    EK_v = db.getClientEk(id_v)  # 从数据库中获取，作为参数向下传递
-    ticket_V_tmp = ticket_v( ticket_tgs.id_c, ticket_tgs.ad_c, id_v, TS_4)
+    EK_v = int(db.getClientEk(id_v) ) # 从数据库中获取，作为参数向下传递
+    ticket_V_tmp = ticket_v(ticket_tgs.id_c, ticket_tgs.ad_c, id_v, TS_4)
     ticket_V = \
         {
             "EKc_v": ticket_V_tmp.EKc_v,
@@ -46,10 +48,12 @@ def create_msgAtoT(ticket_tgs, id_v, TS_4):
         }
     return json.dumps(msgttoc)
 
+
 def send_msg(msg_TtoC, EK_CtoTGS, src, result, target):
     send_data = DES_call(generate_msg_to_C(src, result, target, msg_TtoC), EK_CtoTGS, 0)
     sock.sendall(send_data.encode('utf-8'))
     print("---------------发送完成-----------------")
+
 
 def create_Thread(sock, addr):
     print('Accept new connection from %s:%s...' % addr)
@@ -68,7 +72,7 @@ def create_Thread(sock, addr):
         # 验证时钟同步
         if datetime.strptime(ticket_tgs.lifetime_2, "%Y-%m-%d %H:%M:%S") - datetime.strptime(TS_4,
                                                                                              "%Y-%m-%d %H:%M:%S") < timedelta(
-                minutes=5):
+            minutes=5):
             EK_CtoTGS = ticket_tgs.EKc_tgs
             msg_TtoC = create_msgAtoT(ticket_tgs, msg_CtoT.id_v, TS_4)
 

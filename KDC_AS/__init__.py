@@ -31,7 +31,7 @@ def create_Thread(sock, addr):
     # file = open("from_client.json", 'w')
     # file.write(msg_data)
 
-    EK_c = db.getClientEk(msg_data["data_msg"]["ID_c"])  # 从数据库中获取，作为参数向下传递
+    EK_c = int(db.getClientEk(msg_data["data_msg"]["ID_c"])) # 从数据库中获取，作为参数向下传递
 
     TS_2 = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     if msg_data["control_msg"]["control_target"] == "00001":
