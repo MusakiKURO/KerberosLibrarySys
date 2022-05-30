@@ -551,7 +551,7 @@ class Reader_Logic(demo_manager_MainWindow.Ui_MainWindow, demo_manager_Dialog.Ui
             return self.generate_msg_to_S_Search('00', '0', '00110', str(self.lineEdit_content.text()))
         if option == 1:
             return self.generate_msg_to_S_Search('00', '0', '00111', str(self.lineEdit_content.text()))
-        if option == 1:
+        if option == 2:
             return self.generate_msg_to_S_Search('00', '0', '01000', str(self.lineEdit_content.text()))
 
     def C_S_Search(self):
