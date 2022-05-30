@@ -33,10 +33,7 @@ def Creat_thread(sock, addr):
                 break
             if total_data:
                 print("Message from %s:\n%s" % (addr[0], total_data.decode('utf-8')))
-
-                # print("Message from %s:\n%s" % (addr[0], DES_call(total_data.decode('utf-8'), test_key, 1)))
-                """
-                text_json_loads = json.loads(DES_call(total_data.decode('utf-8'), test_key, 1))
+                text_json_loads = json.loads(total_data.decode('utf-8'))
                 text_josn_dumps = json.dumps(
                     {'control_msg': {'control_src': text_json_loads['control_msg']['control_src'],
                                      'control_result': text_json_loads['control_msg']['control_result'],
@@ -44,8 +41,7 @@ def Creat_thread(sock, addr):
                      'data_msg': {'ID_c': text_json_loads['data_msg']['ID_c'],
                                   'ID_tgs': text_json_loads['data_msg']['ID_tgs'],
                                   'TS_1': text_json_loads['data_msg']['TS_1']}})
-                print(check_password_hash(RSA_call(text_json_loads['HMAC'], C_n, C_e, 1), text_josn_dumps))
-                """
+                print(text_josn_dumps)
                 sock.sendall("I have received".encode('utf-8'))
         sock.close()
     except socket.error as e:

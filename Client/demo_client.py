@@ -5,8 +5,8 @@
 # @Software: PyCharm
 import socket
 import datetime
-from DES.demo_DES import *
-from generate_msg import *
+import json
+from werkzeug.security import generate_password_hash
 
 test_key = '0kLllffV'
 
@@ -22,6 +22,17 @@ Server_ip = '127.0.0.1'
 Server_port = 7790
 
 
+def generate_msg_to_AS_Kerberos(src, result, target, ID_c, ID_tgs, TS_1):
+    dict_msg_origin = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
+                       'data_msg': {'ID_c': ID_c, 'ID_tgs': ID_tgs, 'TS_1': TS_1}}
+    str_msg_origin = json.dumps(dict_msg_origin)
+    HMAC = generate_password_hash(str_msg_origin)
+    dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
+                      'data_msg': {'ID_c': ID_c, 'ID_tgs': ID_tgs, 'TS_1': TS_1},
+                      'HMAC': HMAC}
+    str_msg_final = json.dumps(dict_msg_final)
+    return str_msg_final
+
 
 if __name__ == "__main__":
     # 链接AS
@@ -30,10 +41,10 @@ if __name__ == "__main__":
     try:
         # 发送数据
         print("start...")
-        send_data = DES_call(
-            generate_msg_to_AS_Kerberos('00', '0', '00001', '张三', 'TGS', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
-            test_key, 0)
-        sock.sendall(send_data.encode('utf-8'))
+        send_data = generate_msg_to_AS_Kerberos('00', '0', '00001', '张三', 'TGS',
+                                                datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        for i in range(2):
+            sock.sendall(send_data.encode('utf-8'))
 
         # 接收数据
         # 将收到的数据拼接起来
@@ -45,32 +56,9 @@ if __name__ == "__main__":
                 break
         print("Message from server: %s" % recv_data.decode('utf-8'))
         print(len(recv_data.decode('utf-8')))
-        sock.close()
     except socket.error as e:
         print("Socket error: %s" % str(e))
     except Exception as e:
         print("Other exception: %s" % str(e))
     finally:
         sock.close()
-
-"""
-    # 链接TGS
-    sock.connect((TGS_ip, TGS_port))
-    # 发送并接收数据
-    try:
-        # 发送数据
-        send_data = str_user
-        sock.send(send_data.encode('utf-8'))
-
-        # 接收数据
-        recv_data = sock.recv(1024)
-        print("Message from server: %s" % recv_data.decode('utf-8'))
-        sock.close()
-    except socket.error as e:
-        print("Socket error: %s" % str(e))
-        print("Socket error: %s" % str(e))
-    except Exception as e:
-        print("Other exception: %s" % str(e))
-    finally:
-        sock.close()
-"""
