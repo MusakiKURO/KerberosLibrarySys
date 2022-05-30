@@ -4,6 +4,8 @@ import json
 from datetime import datetime, timedelta
 import logging
 
+from werkzeug.security import check_password_hash
+
 import linkDB
 # ------数据协议相关配置------
 
@@ -30,20 +32,34 @@ def create_Thread(sock, addr):
     msg_data = json.loads(data)
     # file = open("from_client.json", 'w')
     # file.write(msg_data)
-
+    final_dumps_data = json.dumps(
+        {'control_msg': {'control_src': msg_data['control_msg']['control_src'],
+                         'control_result': msg_data['control_msg']['control_result'],
+                         'control_target': msg_data['control_msg']['control_target']},
+         'data_msg': {'ID_c': msg_data['data_msg']['ID_c'], 'ID_tgs': msg_data['data_msg']['ID_tgs'],
+                      'TS_1': msg_data['data_msg']['TS_1']}
+         })
+    Pk_c = int(db.getClientPk(msg_data["data_msg"]["ID_c"]))
     EK_c = int(db.getClientEk(msg_data["data_msg"]["ID_c"]))  # 从数据库中获取，作为参数向下传递
     TS_2 = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    if msg_data["control_msg"]["control_target"] == "00001":
-        msg_CtoA = msgCtoA(["data_msg"]["ID_c"], ["data_msg"]["ID_tgs"], ["data_msg"]["TS_1"])
-        # 验证时钟同步
-        if datetime.strptime(msg_CtoA.ts_1, "%Y-%m-%d %H:%M:%S") - datetime.strptime(TS_2,
-                                                                                     "%Y-%m-%d %H:%M:%S") < timedelta(
+    hash_check = check_password_hash(RSA_call(msg_data['HMAC'], Pk_c, 65537, 1),
+                                     final_dumps_data)
+    if hash_check:
+        if msg_data["control_msg"]["control_target"] == "00001":
+            msg_CtoA = msgCtoA(["data_msg"]["ID_c"], ["data_msg"]["ID_tgs"], ["data_msg"]["TS_1"])
+            # 验证时钟同步
+            if datetime.strptime(msg_CtoA.ts_1, "%Y-%m-%d %H:%M:%S") - datetime.strptime(TS_2,
+                                                                                         "%Y-%m-%d %H:%M:%S") < timedelta(
                 minutes=5):
-            msg_AtoC = create_msgAtoC(msg_CtoA, TS_2, addr)
-            send_msg(msg_AtoC, EK_c, "01", "0", "00001")
-    elif msg_data["control_msg"]["control_target"] == "00000":
-        print("")
+                msg_AtoC = create_msgAtoC(msg_CtoA, TS_2, addr)
+                send_msg(msg_AtoC, EK_c, "01", "0", "00001")
+        elif msg_data["control_msg"]["control_target"] == "00000":
+            print("")
+    else:
+        tipsstr = { "tips": "error"}
+        json.dumps(tipsstr)
+        send_data = generate_msg_to_C("01", "1", "00001", tipsstr)
+        sock.sendall(send_data.encode('utf-8'))
 
 
 def create_msgAtoC(msg_CtoA, TS_2, addr):

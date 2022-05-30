@@ -4,6 +4,8 @@ import json
 from datetime import datetime, timedelta
 import logging
 
+from werkzeug.security import check_password_hash
+
 import linkDB
 # ------数据协议相关配置------
 
@@ -64,19 +66,36 @@ def create_Thread(sock, addr):
     # file = open("from_client.json", 'w')
     # file.write(msg_data)
 
+    final_dumps_data = json.dumps(
+        {'control_msg': {'control_src': msg_data['control_msg']['control_src'],
+                         'control_result': msg_data['control_msg']['control_result'],
+                         'control_target': msg_data['control_msg']['control_target']},
+         'data_msg': {'ID_v': msg_data['data_msg']['ID_v'], 'ticket_TGS': msg_data['data_msg']['ticket_TGS'],
+                      'Authenticator': msg_data['data_msg']['Authenticator']}
+         })
+
     TS_4 = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    if msg_data["control_msg"]["control_target"] == "00010":
-        msg_CtoT = msgCtoT(["data_msg"]["ID_v"], ["data_msg"]["ticket_TGS"])
+    Pk_c = int(db.getClientPk(msg_data["data_msg"]["ID_c"]))
+    hash_check = check_password_hash(RSA_call(msg_data['HMAC'], Pk_c, 65537, 1),
+                                     final_dumps_data)
+    if hash_check:
+        if msg_data["control_msg"]["control_target"] == "00010":
+            msg_CtoT = msgCtoT(["data_msg"]["ID_v"], ["data_msg"]["ticket_TGS"])
 
-        ticket_tgs = loadticket_tgs(msg_CtoT.ticket_tgs)
-        # 验证时钟同步
-        if datetime.strptime(ticket_tgs.lifetime_2, "%Y-%m-%d %H:%M:%S") - datetime.strptime(TS_4,
-                                                                                             "%Y-%m-%d %H:%M:%S") < timedelta(
-            minutes=5):
-            EK_CtoTGS = ticket_tgs.EKc_tgs
-            msg_TtoC = create_msgAtoT(ticket_tgs, msg_CtoT.id_v, TS_4)
+            ticket_tgs = loadticket_tgs(msg_CtoT.ticket_tgs)
+            # 验证时钟同步
+            if datetime.strptime(ticket_tgs.lifetime_2, "%Y-%m-%d %H:%M:%S") - datetime.strptime(TS_4,
+                                                                                                 "%Y-%m-%d %H:%M:%S") < timedelta(
+                minutes=5):
+                EK_CtoTGS = ticket_tgs.EKc_tgs
+                msg_TtoC = create_msgAtoT(ticket_tgs, msg_CtoT.id_v, TS_4)
 
-            send_msg(msg_TtoC, EK_CtoTGS, "10", "0", "00000")
+                send_msg(msg_TtoC, EK_CtoTGS, "10", "0", "00000")
+    else:
+        tipsstr = { "tips": "error"}
+        json.dumps(tipsstr)
+        send_data = generate_msg_to_C("10", "1", "00001", tipsstr)
+        sock.sendall(send_data.encode('utf-8'))
 
 
 def loadticket_tgs(ticket_TGS):
