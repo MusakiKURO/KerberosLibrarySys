@@ -31,13 +31,15 @@ def create_Thread(sock, addr):
     # file = open("from_client.json", 'w')
     # file.write(msg_data)
 
-    EK_c = int(db.getClientEk(msg_data["data_msg"]["ID_c"])) # 从数据库中获取，作为参数向下传递
-
+    EK_c = int(db.getClientEk(msg_data["data_msg"]["ID_c"]))  # 从数据库中获取，作为参数向下传递
     TS_2 = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
     if msg_data["control_msg"]["control_target"] == "00001":
         msg_CtoA = msgCtoA(["data_msg"]["ID_c"], ["data_msg"]["ID_tgs"], ["data_msg"]["TS_1"])
         # 验证时钟同步
-        if datetime.strptime(msg_CtoA.ts_1, "%Y-%m-%d %H:%M:%S") - datetime.strptime(TS_2, "%Y-%m-%d %H:%M:%S") < timedelta(minutes=5):
+        if datetime.strptime(msg_CtoA.ts_1, "%Y-%m-%d %H:%M:%S") - datetime.strptime(TS_2,
+                                                                                     "%Y-%m-%d %H:%M:%S") < timedelta(
+                minutes=5):
             msg_AtoC = create_msgAtoC(msg_CtoA, TS_2, addr)
             send_msg(msg_AtoC, EK_c, "01", "0", "00001")
     elif msg_data["control_msg"]["control_target"] == "00000":
@@ -66,6 +68,7 @@ def create_msgAtoC(msg_CtoA, TS_2, addr):
         }
     return json.dumps(msg_AtoC)
 
+
 def generate_msg_to_C(src, result, target, data_msg):
     dict_msg_orign = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
                       'data_msg': data_msg}
@@ -77,9 +80,10 @@ def generate_msg_to_C(src, result, target, data_msg):
     str_msg_final = json.dumps(dict_msg_final)
     return str_msg_final
 
+
 def send_msg(msg_AtoC, EK_c, src, result, target):
     # 这里开始使用传数据
-    send_data = DES_call(generate_msg_to_C(src, result, target, msg_AtoC), EK_c, 0)
+    send_data = generate_msg_to_C(src, result, target, DES_call(msg_AtoC, EK_c, 0))
     sock.sendall(send_data.encode('utf-8'))
     print("---------------发送完成-----------------")
 

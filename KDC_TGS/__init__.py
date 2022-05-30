@@ -28,7 +28,7 @@ def generate_msg_to_C(src, result, target, data_msg):
 
 
 def create_msgAtoT(ticket_tgs, id_v, TS_4):
-    EK_v = int(db.getClientEk(id_v) ) # 从数据库中获取，作为参数向下传递
+    EK_v = int(db.getClientEk(id_v))  # 从数据库中获取，作为参数向下传递
     ticket_V_tmp = ticket_v(ticket_tgs.id_c, ticket_tgs.ad_c, id_v, TS_4)
     ticket_V = \
         {
@@ -50,7 +50,7 @@ def create_msgAtoT(ticket_tgs, id_v, TS_4):
 
 
 def send_msg(msg_TtoC, EK_CtoTGS, src, result, target):
-    send_data = DES_call(generate_msg_to_C(src, result, target, msg_TtoC), EK_CtoTGS, 0)
+    send_data = generate_msg_to_C(src, result, target, DES_call(msg_TtoC, EK_CtoTGS, 0))
     sock.sendall(send_data.encode('utf-8'))
     print("---------------发送完成-----------------")
 
