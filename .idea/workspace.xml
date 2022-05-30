@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c3cfbabc-79c7-44f1-854f-b18303507d47" name="变更" comment="KDC re createEK">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="c3cfbabc-79c7-44f1-854f-b18303507d47" name="变更" comment="KDC hashmac">
       <change beforePath="$PROJECT_DIR$/KDC_AS/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/KDC_AS/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KDC_AS/myAS.py" beforeDir="false" afterPath="$PROJECT_DIR$/KDC_AS/myAS.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KDC_TGS/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/KDC_TGS/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KDC_TGS/myTGS.py" beforeDir="false" afterPath="$PROJECT_DIR$/KDC_TGS/myTGS.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -320,7 +321,14 @@
       <option name="project" value="LOCAL" />
       <updated>1653893599683</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="KDC hashmac">
+      <created>1653924303332</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1653924303332</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -351,6 +359,7 @@
     <MESSAGE value="KDC database" />
     <MESSAGE value="KDC createEK" />
     <MESSAGE value="KDC re createEK" />
-    <option name="LAST_COMMIT_MESSAGE" value="KDC re createEK" />
+    <MESSAGE value="KDC hashmac" />
+    <option name="LAST_COMMIT_MESSAGE" value="KDC hashmac" />
   </component>
 </project>

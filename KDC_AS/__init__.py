@@ -30,6 +30,7 @@ def create_Thread(sock, addr):
     # 客户端返回信息进行确认开始工作
     data = sock.recv(1024 * 10).decode()
     msg_data = json.loads(data)
+    print(msg_data)
     # file = open("from_client.json", 'w')
     # file.write(msg_data)
     final_dumps_data = json.dumps(
@@ -92,7 +93,7 @@ def generate_msg_to_C(src, result, target, data_msg):
     HMAC = generate_password_hash(str_msg_orign)
     dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
                       'data_msg': data_msg,
-                      'HMAC': RSA_call(HMAC, myas.pKey, myas.sKey, 0)}
+                      'HMAC': RSA_call(HMAC, myas.sKey, 65537, 0)}
     str_msg_final = json.dumps(dict_msg_final)
     return str_msg_final
 
