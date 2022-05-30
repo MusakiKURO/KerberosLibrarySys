@@ -52,7 +52,7 @@ def create_msgAtoT(ticket_tgs, id_v, TS_4):
 def send_msg(msg_TtoC, EK_CtoTGS, src, result, target):
     send_data = generate_msg_to_C(src, result, target, DES_call(msg_TtoC, EK_CtoTGS, 0))
     sock.sendall(send_data.encode('utf-8'))
-    print("---------------发送完成-----------------")
+    print("---------------发送完成--- --------------")
 
 
 def create_Thread(sock, addr):

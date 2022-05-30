@@ -85,7 +85,7 @@ def send_msg(msg_AtoC, EK_c, src, result, target):
     # 这里开始使用传数据
     send_data = generate_msg_to_C(src, result, target, DES_call(msg_AtoC, EK_c, 0))
     sock.sendall(send_data.encode('utf-8'))
-    print("---------------发送完成-----------------")
+    print("---------------发送完成---- -------------")
 
 
 if __name__ == "__main__":
