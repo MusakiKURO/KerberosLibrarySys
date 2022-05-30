@@ -330,20 +330,18 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
                 # 解密来自AS的消息
                 final_str_data = total_data.decode('utf-8')
                 final_loads_data = json.loads(final_str_data)
-                final_str_data_data_msg = DES_call(final_loads_data['data_msg'], str(self.lineEdit_passwd.text()), 1)
-                final_loads_data_data_msg = json.loads(final_str_data_data_msg)
+
                 ###
                 # 收到来自AS的正确消息的情况
                 if final_loads_data['control_msg']['control_result'] == '0':
+                    final_str_data_data_msg = DES_call(final_loads_data['data_msg'], str(self.lineEdit_passwd.text()),
+                                                       1)
+                    final_loads_data_data_msg = json.loads(final_str_data_data_msg)
                     final_dumps_data = json.dumps(
                         {'control_msg': {'control_src': final_loads_data['control_msg']['control_src'],
                                          'control_result': final_loads_data['control_msg']['control_result'],
                                          'control_target': final_loads_data['control_msg']['control_target']},
-                         'data_msg': {'EKc_tgs': final_loads_data_data_msg['data_msg']['EKc_tgs'],
-                                      'ID_tgs': final_loads_data_data_msg['data_msg']['ID_tgs'],
-                                      'TS_2': final_loads_data_data_msg['data_msg']['TS_2'],
-                                      'Lifetime_2': final_loads_data_data_msg['data_msg']['Lifetime_2'],
-                                      'ticket_TGS': final_loads_data_data_msg['data_msg']['ticket_TGS']}})
+                         'data_msg': final_loads_data['data_msg']})
                     hash_check = check_password_hash(RSA_call(final_loads_data['HMAC'], AS_n, AS_e, 1),
                                                      final_dumps_data)
                     if not hash_check:
@@ -359,15 +357,14 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
                         {'control_msg': {'control_src': final_loads_data['control_msg']['control_src'],
                                          'control_result': final_loads_data['control_msg']['control_result'],
                                          'control_target': final_loads_data['control_msg']['control_target']},
-                         'data_msg': {'tips': final_loads_data_data_msg['data_msg']['tips']}})
+                         'data_msg': {'tips': final_loads_data['data_msg']['tips']}})
                     hash_check = check_password_hash(RSA_call(final_loads_data['HMAC'], AS_n, AS_e, 1),
                                                      final_dumps_data)
                     if not hash_check:
                         QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
                     else:
                         self.textBrowser_showtext.append(final_str_data)
-                        QMessageBox.information(self, "提示", final_loads_data_data_msg['data_msg']['tips'],
-                                                QMessageBox.Yes,
+                        QMessageBox.information(self, "提示", final_loads_data['data_msg']['tips'], QMessageBox.Yes,
                                                 QMessageBox.Yes)
                 ###
         except socket.error as e:
@@ -413,18 +410,14 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
                 ###
                 final_str_data = total_data.decode('utf-8')
                 final_loads_data = json.loads(final_str_data)
-                final_str_data_data_msg = DES_call(final_loads_data['data_msg'], EKc_tgs, 1)
-                final_loads_data_data_msg = json.loads(final_str_data_data_msg)
                 if final_loads_data['control_msg']['control_result'] == '0':
+                    final_str_data_data_msg = DES_call(final_loads_data['data_msg'], EKc_tgs, 1)
+                    final_loads_data_data_msg = json.loads(final_str_data_data_msg)
                     final_dumps_data = json.dumps(
                         {'control_msg': {'control_src': final_loads_data['control_msg']['control_src'],
                                          'control_result': final_loads_data['control_msg']['control_result'],
                                          'control_target': final_loads_data['control_msg']['control_target']},
-                         'data_msg': {'EKc_v': final_loads_data_data_msg['data_msg']['EKc_v'],
-                                      'ID_v': final_loads_data_data_msg['data_msg']['ID_v'],
-                                      'TS_4': final_loads_data_data_msg['data_msg']['TS_4'],
-                                      'Lifetime_4': final_loads_data_data_msg['data_msg']['Lifetime_4'],
-                                      'ticket_V': final_loads_data_data_msg['data_msg']['ticket_V']}})
+                         'data_msg': final_loads_data['data_msg']})
                     hash_check = check_password_hash(RSA_call(final_loads_data['HMAC'], TGS_n, TGS_e, 1),
                                                      final_dumps_data)
                     if not hash_check:
@@ -439,15 +432,14 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
                         {'control_msg': {'control_src': final_loads_data['control_msg']['control_src'],
                                          'control_result': final_loads_data['control_msg']['control_result'],
                                          'control_target': final_loads_data['control_msg']['control_target']},
-                         'data_msg': {'tips': final_loads_data_data_msg['data_msg']['tips']}})
+                         'data_msg': {'tips': final_loads_data['data_msg']['tips']}})
                     hash_check = check_password_hash(RSA_call(final_loads_data['HMAC'], TGS_n, TGS_e, 1),
                                                      final_dumps_data)
                     if not hash_check:
                         QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
                     else:
                         self.textBrowser_showtext.append(final_str_data)
-                        QMessageBox.information(self, "提示", final_loads_data_data_msg['data_msg']['tips'],
-                                                QMessageBox.Yes,
+                        QMessageBox.information(self, "提示", final_loads_data['data_msg']['tips'], QMessageBox.Yes,
                                                 QMessageBox.Yes)
         except socket.error as e:
             print("Socket error: %s" % str(e))
@@ -489,14 +481,14 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
                 ###
                 final_str_data = total_data.decode('utf-8')
                 final_loads_data = json.loads(final_str_data)
-                final_str_data_data_msg = DES_call(final_loads_data['data_msg'], EKc_v, 1)
-                final_loads_data_data_msg = json.loads(final_str_data_data_msg)
                 if final_loads_data['control_msg']['control_result'] == '0':
+                    final_str_data_data_msg = DES_call(final_loads_data['data_msg'], EKc_v, 1)
+                    final_loads_data_data_msg = json.loads(final_str_data_data_msg)
                     final_dumps_data = json.dumps(
                         {'control_msg': {'control_src': final_loads_data['control_msg']['control_src'],
                                          'control_result': final_loads_data['control_msg']['control_result'],
                                          'control_target': final_loads_data['control_msg']['control_target']},
-                         'data_msg': {'TS_6': final_loads_data_data_msg['data_msg']['TS_6']}})
+                         'data_msg': final_loads_data['data_msg']})
                     hash_check = check_password_hash(RSA_call(final_loads_data['HMAC'], S_n, S_e, 1),
                                                      final_dumps_data)
                     if not hash_check:
@@ -527,8 +519,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
                         QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
                     else:
                         self.textBrowser_showtext.append(final_str_data)
-                        QMessageBox.information(self, "提示", final_loads_data_data_msg['data_msg']['tips'],
-                                                QMessageBox.Yes,
+                        QMessageBox.information(self, "提示", final_loads_data['data_msg']['tips'], QMessageBox.Yes,
                                                 QMessageBox.Yes)
         except socket.error as e:
             print("Socket error: %s" % str(e))
@@ -549,7 +540,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
             return self.generate_msg_to_S_Search('00', '0', '00110', str(self.lineEdit_content.text()))
         if option == 1:
             return self.generate_msg_to_S_Search('00', '0', '00111', str(self.lineEdit_content.text()))
-        if option == 1:
+        if option == 2:
             return self.generate_msg_to_S_Search('00', '0', '01000', str(self.lineEdit_content.text()))
 
     def C_S_Search(self):
@@ -567,19 +558,14 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
         if total_data:
             final_str_data = total_data.decode('utf-8')
             final_loads_data = json.loads(final_str_data)
-            final_str_data_data_msg = DES_call(final_loads_data['data_msg'], EKc_v, 1)
-            final_loads_data_data_msg = json.loads(final_str_data_data_msg)
             if final_loads_data['control_msg']['control_result'] == '0':
+                final_str_data_data_msg = DES_call(final_loads_data['data_msg'], EKc_v, 1)
+                final_loads_data_data_msg = json.loads(final_str_data_data_msg)
                 final_dumps_data = json.dumps(
                     {'control_msg': {'control_src': final_loads_data['control_msg']['control_src'],
                                      'control_result': final_loads_data['control_msg']['control_result'],
                                      'control_target': final_loads_data['control_msg']['control_target']},
-                     'data_msg': {'book_id': final_loads_data_data_msg['data_msg']['book_id'],
-                                  'book_name': final_loads_data_data_msg['data_msg']['book_name'],
-                                  'book_author': final_loads_data_data_msg['data_msg']['book_author'],
-                                  'book_press': final_loads_data_data_msg['data_msg']['book_press'],
-                                  'book_inventory': final_loads_data_data_msg['data_msg']['book_inventory'],
-                                  'book_totalnum': final_loads_data_data_msg['data_msg']['book_totalnum']}})
+                     'data_msg': final_loads_data['data_msg']})
                 hash_check = check_password_hash(RSA_call(final_loads_data['HMAC'], S_n, S_e, 1),
                                                  final_dumps_data)
                 if not hash_check:
@@ -606,8 +592,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
                 if not hash_check:
                     QMessageBox.warning(self, "警告", "消息可能被篡改，请重新搜索！", QMessageBox.Yes, QMessageBox.Yes)
                 else:
-                    QMessageBox.information(self, "提示", final_loads_data_data_msg['data_msg']['tips'],
-                                            QMessageBox.Yes,
+                    QMessageBox.information(self, "提示", final_loads_data['data_msg']['tips'], QMessageBox.Yes,
                                             QMessageBox.Yes)
 
     # 生成右键菜单
@@ -645,8 +630,6 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
         if total_data:
             final_str_data = total_data.decode('utf-8')
             final_loads_data = json.loads(final_str_data)
-            final_str_data_data_msg = DES_call(final_loads_data['data_msg'], EKc_v, 1)
-            final_loads_data_data_msg = json.loads(final_str_data_data_msg)
             if final_loads_data['control_msg']['control_result'] == '0':
                 final_dumps_data = json.dumps(
                     {'control_msg': {'control_src': final_loads_data['control_msg']['control_src'],
@@ -658,8 +641,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
                 if not hash_check:
                     QMessageBox.warning(self, "警告", "消息可能被篡改，请重新预约！", QMessageBox.Yes, QMessageBox.Yes)
                 else:
-                    QMessageBox.information(self, "提示", final_loads_data_data_msg['data_msg']['tips'],
-                                            QMessageBox.Yes,
+                    QMessageBox.information(self, "提示", final_loads_data['data_msg']['tips'], QMessageBox.Yes,
                                             QMessageBox.Yes)
             if final_loads_data['control_msg']['control_result'] == '1':
                 final_dumps_data = json.dumps(
@@ -672,8 +654,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
                 if not hash_check:
                     QMessageBox.warning(self, "警告", "消息可能被篡改，请重新预约！", QMessageBox.Yes, QMessageBox.Yes)
                 else:
-                    QMessageBox.information(self, "提示", final_loads_data_data_msg['data_msg']['tips'],
-                                            QMessageBox.Yes,
+                    QMessageBox.information(self, "提示", final_loads_data['data_msg']['tips'], QMessageBox.Yes,
                                             QMessageBox.Yes)
 
     def C_S_Borrow(self, book_id):
@@ -689,8 +670,6 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
         if total_data:
             final_str_data = total_data.decode('utf-8')
             final_loads_data = json.loads(final_str_data)
-            final_str_data_data_msg = DES_call(final_loads_data['data_msg'], EKc_v, 1)
-            final_loads_data_data_msg = json.loads(final_str_data_data_msg)
             if final_loads_data['control_msg']['control_result'] == '0':
                 final_dumps_data = json.dumps(
                     {'control_msg': {'control_src': final_loads_data['control_msg']['control_src'],
@@ -702,8 +681,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
                 if not hash_check:
                     QMessageBox.warning(self, "警告", "消息可能被篡改，请重新借阅！", QMessageBox.Yes, QMessageBox.Yes)
                 else:
-                    QMessageBox.information(self, "提示", final_loads_data_data_msg['data_msg']['tips'],
-                                            QMessageBox.Yes,
+                    QMessageBox.information(self, "提示", final_loads_data['data_msg']['tips'], QMessageBox.Yes,
                                             QMessageBox.Yes)
             if final_loads_data['control_msg']['control_result'] == '1':
                 final_dumps_data = json.dumps(
@@ -716,8 +694,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
                 if not hash_check:
                     QMessageBox.warning(self, "警告", "消息可能被篡改，请重新借阅！", QMessageBox.Yes, QMessageBox.Yes)
                 else:
-                    QMessageBox.information(self, "提示", final_loads_data_data_msg['data_msg']['tips'],
-                                            QMessageBox.Yes,
+                    QMessageBox.information(self, "提示", final_loads_data['data_msg']['tips'], QMessageBox.Yes,
                                             QMessageBox.Yes)
 
     def C_S_Return(self, book_id):
@@ -733,8 +710,6 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
         if total_data:
             final_str_data = total_data.decode('utf-8')
             final_loads_data = json.loads(final_str_data)
-            final_str_data_data_msg = DES_call(final_loads_data['data_msg'], EKc_v, 1)
-            final_loads_data_data_msg = json.loads(final_str_data_data_msg)
             if final_loads_data['control_msg']['control_result'] == '0':
                 final_dumps_data = json.dumps(
                     {'control_msg': {'control_src': final_loads_data['control_msg']['control_src'],
@@ -746,8 +721,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
                 if not hash_check:
                     QMessageBox.warning(self, "警告", "消息可能被篡改，请重新归还！", QMessageBox.Yes, QMessageBox.Yes)
                 else:
-                    QMessageBox.information(self, "提示", final_loads_data_data_msg['data_msg']['tips'],
-                                            QMessageBox.Yes,
+                    QMessageBox.information(self, "提示", final_loads_data['data_msg']['tips'], QMessageBox.Yes,
                                             QMessageBox.Yes)
             if final_loads_data['control_msg']['control_result'] == '1':
                 final_dumps_data = json.dumps(
@@ -760,8 +734,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
                 if not hash_check:
                     QMessageBox.warning(self, "警告", "消息可能被篡改，请重新归还！", QMessageBox.Yes, QMessageBox.Yes)
                 else:
-                    QMessageBox.information(self, "提示", final_loads_data_data_msg['data_msg']['tips'],
-                                            QMessageBox.Yes,
+                    QMessageBox.information(self, "提示", final_loads_data['data_msg']['tips'], QMessageBox.Yes,
                                             QMessageBox.Yes)
 
 
