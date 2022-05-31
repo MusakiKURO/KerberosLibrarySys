@@ -1,3 +1,4 @@
+# coding=utf-8
 # @Time    : 2022/5/18 20:29
 # @Author  : Nisky
 # @File    : demo_DES_BOX.py

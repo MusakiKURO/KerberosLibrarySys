@@ -14,7 +14,7 @@ import linkDB
 from DES.demo_DES import DES_call
 from KDC_AS.myAS import *
 
-SERVER_IP = '192.168.43.193'
+SERVER_IP = '192.168.43.142'
 SERVER_PORT = 7788
 
 '''

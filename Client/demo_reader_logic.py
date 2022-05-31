@@ -20,11 +20,11 @@ from datetime import datetime, timedelta
 
 # 要连接的目标IP和Port
 # AS
-AS_IP = '127.0.0.1'
+AS_IP = '192.168.43.142'
 AS_Port = 7788
 # TGS
-TGS_IP = ''
-TGS_Port = None
+TGS_IP = '192.168.43.193'
+TGS_Port = 11230
 # Server
 S_IP = ''
 S_Port = None
@@ -43,11 +43,9 @@ S_n = 10469390129546136402029942747457300548433313561152500694655265739940475404
 S_e = 65537
 S_d = 8110714186754298143092669075085860864016604301796462536720282468655230133025737091234707993278826287221376645546146352091988380401468111815874210426525400382088173880496849377126036552149674050194062324003640372613730019482102102830475400477867707647507480439289508934499359168896502067748418875596229903696601538947599762970083498153007126984514457653542261324691019431373092778414249493081800991492478535451747689826738343974509191893347816832399493117974542984766167012840616050188269725303380603488917126926095089931521535057761266939722944819520741894548836638416431206454098874309067605170447054752532589197921
 # C
-# C_n_1 注册测试
 C_n_1 = 3951270249045146953972943163348434942592764989560360906533269897277080404934010181112385167732070275357806027491762234996305583674911212807857840660608406910051955297329683233106234207322044758397760274898933802535462100186118312888112180532109135970587764285970799040141296520625252128054797411575140828014980501308928204513652682136220524500675713399801045198810206992806199335791852827154930372510398253049468928422550127057850688190116699758746503012249254107915609637655541305024737077987890330855253602741330884459042041448515721767143012038195427206379154406467638677589417430783480145088864002792702243711871
 C_e_1 = 65537
 C_d_1 = 2757273636260153892397342107350259780423194855845766289858950397671128036969148536137032681933728579320666845526660699957063082811308337204049050565811744102070678725190020954569898057638571691346945552160656416853903721986232949376871604624486124103069872348296421143823823394078988290161741459382729076515559052021058495642905456516812473319945752701566826454688598762391217175129649908066837336480981333656504068536290700516972492847182109009403521746900589327304409884664070941216444164761014904237097127620724122770288299493272459500309150609158525585771453450568861932542872871536494818060418219971795890204521
-
 C_n_2 = 2440377791864065274813867079683927118448249889237816829169332581163550200188754797695239559187402583824434016024383686718297339595321863528950898122117152257275170703752818364764988933320158047486977517208831918337392866844036736478998044963921785922013825256822302265204998231469222373247560352424688661160793664441560098580623986633890529752536456629687210963738777154840220133258368897771955948362510942683542834447030780606971377840741148347035961537716669133482168102975994612355608633388001131737009273091650029420343335464720087854056903286322179538661549404577746037343631153361099095498771745166881003667029
 C_e_2 = 65537
 C_d_2 = 2208430750261287262441991985624827952773682109814554228975613420261040866576051231238983593638501494445268056553918362022808163582699072007797425360125182203556400569116257252811113777825532653010630065316102406468927417287732590248202024058474957344138363799557762832366114334070473785992131305699123168837724288522599915633752416259160413149871833133277662366347388925200457243671530913111321014521051777948182370677613471220975732470408520310076720596981149789004587491601175305299766492704513532773199426769935506009334136239018308615860447970196385434673787095433505218964380490613200473196668209563753786617473
@@ -140,7 +138,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
         HMAC = generate_password_hash(str_msg_origin)
         dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
                           'data_msg': {'ID_c': ID_c, 'ID_tgs': ID_tgs, 'TS_1': TS_1},
-                          'HMAC': RSA_call(HMAC, C_n_2, C_d_2, 0)}
+                          'HMAC': RSA_call(HMAC, C_n_1, C_d_1, 0)}
         str_msg_final = json.dumps(dict_msg_final)
         self.textBrowser_showtext.append(str_msg_final)
         return str_msg_final
@@ -157,7 +155,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
                           'data_msg': {'ID_v': ID_v, 'tick_tgs': TGT,
                                        'Authenticator': DES_call(json.dumps({'ID_c': ID_c, 'AD_c': AD_c, 'TS_3': TS_3}),
                                                                  EKc_tgs, 0)},
-                          'HMAC': RSA_call(HMAC, C_n_2, C_d_2, 0)}
+                          'HMAC': RSA_call(HMAC, C_n_1, C_d_1, 0)}
         str_msg_final = json.dumps(dict_msg_final)
         self.textBrowser_showtext.append(str_msg_final)
         return str_msg_final
@@ -174,7 +172,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
                           'data_msg': {'ticket_V': ST,
                                        'Authenticator': DES_call(json.dumps({'ID_c': ID_c, 'AD_c': AD_c, 'TS_5': TS_5}),
                                                                  EKc_v, 0)},
-                          'HMAC': RSA_call(HMAC, C_n_2, C_d_2, 0)}
+                          'HMAC': RSA_call(HMAC, C_n_1, C_d_1, 0)}
         str_msg_final = json.dumps(dict_msg_final)
         self.textBrowser_showtext.append(str_msg_final)
         return str_msg_final
@@ -186,7 +184,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
         HMAC = generate_password_hash(str_msg_origin)
         dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
                           'data_msg': DES_call(json.dumps({'book_content': content}), EKc_v, 0),
-                          'HMAC': RSA_call(HMAC, C_n_2, C_d_2, 0)}
+                          'HMAC': RSA_call(HMAC, C_n_1, C_d_1, 0)}
         str_msg_final = json.dumps(dict_msg_final)
         self.textBrowser_showtext.append(str_msg_final)
         return str_msg_final
@@ -198,7 +196,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
         HMAC = generate_password_hash(str_msg_origin)
         dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
                           'data_msg': DES_call(json.dumps({'book_id': book_id}), EKc_v, 0),
-                          'HMAC': RSA_call(HMAC, C_n_2, C_d_2, 0)}
+                          'HMAC': RSA_call(HMAC, C_n_1, C_d_1, 0)}
         str_msg_final = json.dumps(dict_msg_final)
         self.textBrowser_showtext.append(str_msg_final)
         return str_msg_final
@@ -210,7 +208,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
         HMAC = generate_password_hash(str_msg_origin)
         dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
                           'data_msg': DES_call(json.dumps({'book_id': book_id}), EKc_v, 0),
-                          'HMAC': RSA_call(HMAC, C_n_2, C_d_2, 0)}
+                          'HMAC': RSA_call(HMAC, C_n_1, C_d_1, 0)}
         str_msg_final = json.dumps(dict_msg_final)
         self.textBrowser_showtext.append(str_msg_final)
         return str_msg_final
@@ -222,7 +220,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
         HMAC = generate_password_hash(str_msg_origin)
         dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
                           'data_msg': DES_call(json.dumps({'book_id': book_id}), EKc_v, 0),
-                          'HMAC': RSA_call(HMAC, C_n_2, C_d_2, 0)}
+                          'HMAC': RSA_call(HMAC, C_n_1, C_d_1, 0)}
         str_msg_final = json.dumps(dict_msg_final)
         self.textBrowser_showtext.append(str_msg_final)
         return str_msg_final
@@ -301,79 +299,73 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
         ###
         global TGT
         global EKc_tgs
+        print('开始连接AS')
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((AS_IP, AS_Port))
         ###
         print('成功连接AS')
         ###
-        try:
-            # 发送数据
-            send_data = self.generate_msg_to_AS_Kerberos('00', '0', '00011', str(self.lineEdit_username.text()), 'TGS',
-                                                         datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-            self.socket.sendall(send_data.encode('utf-8'))
+        # 发送数据
+        send_data = self.generate_msg_to_AS_Kerberos('00', '0', '00011', str(self.lineEdit_username.text()), 'TGS',
+                                                     datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        self.socket.sendall(send_data.encode('utf-8'))
+        ###
+        print('数据已发送')
+        ###
+        # 接收数据,将收到的数据拼接起来
+        total_data = bytes()
+        while True:
+            recv_data = self.socket.recv(1024)
+            # QApplication.processEvents()
+            total_data += recv_data
+            if len(recv_data) < 1024:
+                break
+        if total_data:
             ###
-            print('数据已发送')
+            print('已收到数据')
+            print(total_data.decode('utf-8'))
             ###
-            # 接收数据,将收到的数据拼接起来
-            total_data = bytes()
-            while True:
-                recv_data = self.socket.recv(1024)
-                # QApplication.processEvents()
-                total_data += recv_data
-                if len(recv_data) < 1024:
-                    break
-            if total_data:
-                ###
-                print('已收到数据')
-                print(total_data)
-                print(total_data.decode('utf-8'))
-                ###
 
-                # 解密来自AS的消息
-                final_str_data = total_data.decode('utf-8')
-                final_loads_data = json.loads(final_str_data)
+            # 解密来自AS的消息
+            final_str_data = total_data.decode('utf-8')
+            final_loads_data = json.loads(final_str_data)
 
-                ###
-                # 收到来自AS的正确消息的情况
-                if final_loads_data['control_msg']['control_result'] == '0':
-                    final_str_data_data_msg = DES_call(final_loads_data['data_msg'], str(self.lineEdit_passwd.text()),
-                                                       1)
-                    final_loads_data_data_msg = json.loads(final_str_data_data_msg)
-                    final_dumps_data = json.dumps(
-                        {'control_msg': {'control_src': final_loads_data['control_msg']['control_src'],
-                                         'control_result': final_loads_data['control_msg']['control_result'],
-                                         'control_target': final_loads_data['control_msg']['control_target']},
-                         'data_msg': final_loads_data['data_msg']})
-                    hash_check = check_password_hash(RSA_call(final_loads_data['HMAC'], AS_n, AS_e, 1),
-                                                     final_dumps_data)
-                    if not hash_check:
-                        QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
-                    else:
-                        self.textBrowser_showtext.append(final_str_data)
-                        QMessageBox.information(self, "提示", "AS认证通过！", QMessageBox.Yes, QMessageBox.Yes)
-                        TGT = final_loads_data_data_msg['data_msg']['ticket_TGS']
-                        EKc_tgs = final_loads_data_data_msg['data_msg']['EKc_tgs']
-                # 收到来自AS的错误消息的情况
-                if final_loads_data['control_msg']['control_result'] == '1':
-                    final_dumps_data = json.dumps(
-                        {'control_msg': {'control_src': final_loads_data['control_msg']['control_src'],
-                                         'control_result': final_loads_data['control_msg']['control_result'],
-                                         'control_target': final_loads_data['control_msg']['control_target']},
-                         'data_msg': {'tips': final_loads_data['data_msg']['tips']}})
-                    hash_check = check_password_hash(RSA_call(final_loads_data['HMAC'], AS_n, AS_e, 1),
-                                                     final_dumps_data)
-                    if not hash_check:
-                        QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
-                    else:
-                        self.textBrowser_showtext.append(final_str_data)
-                        QMessageBox.information(self, "提示", final_loads_data['data_msg']['tips'], QMessageBox.Yes,
-                                                QMessageBox.Yes)
-                ###
-        except socket.error as e:
-            print("Socket error: %s" % str(e))
-        except Exception as e:
-            print("Other exception: %s" % str(e))
-        finally:
+            ###
+            # 收到来自AS的正确消息的情况
+            if final_loads_data['control_msg']['control_result'] == '0':
+                final_str_data_data_msg = DES_call(final_loads_data['data_msg'], str(self.lineEdit_passwd.text()),
+                                                   1)
+                final_loads_data_data_msg = json.loads(final_str_data_data_msg)
+                final_dumps_data = json.dumps(
+                    {'control_msg': {'control_src': final_loads_data['control_msg']['control_src'],
+                                     'control_result': final_loads_data['control_msg']['control_result'],
+                                     'control_target': final_loads_data['control_msg']['control_target']},
+                     'data_msg': final_loads_data['data_msg']})
+                hash_check = check_password_hash(RSA_call(final_loads_data['HMAC'], AS_n, AS_e, 1),
+                                                 final_dumps_data)
+                if not hash_check:
+                    QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
+                else:
+                    self.textBrowser_showtext.append(final_str_data)
+                    QMessageBox.information(self, "提示", "AS认证通过！", QMessageBox.Yes, QMessageBox.Yes)
+                    TGT = final_loads_data_data_msg['data_msg']['ticket_TGS']
+                    EKc_tgs = final_loads_data_data_msg['data_msg']['EKc_tgs']
+            # 收到来自AS的错误消息的情况
+            if final_loads_data['control_msg']['control_result'] == '1':
+                final_dumps_data = json.dumps(
+                    {'control_msg': {'control_src': final_loads_data['control_msg']['control_src'],
+                                     'control_result': final_loads_data['control_msg']['control_result'],
+                                     'control_target': final_loads_data['control_msg']['control_target']},
+                     'data_msg': {'tips': final_loads_data['data_msg']['tips']}})
+                hash_check = check_password_hash(RSA_call(final_loads_data['HMAC'], AS_n, AS_e, 1),
+                                                 final_dumps_data)
+                if not hash_check:
+                    QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
+                else:
+                    self.textBrowser_showtext.append(final_str_data)
+                    QMessageBox.information(self, "提示", final_loads_data['data_msg']['tips'], QMessageBox.Yes,
+                                            QMessageBox.Yes)
+            ###
             self.socket.close()
 
     def C_TGS_Kerberos(self):

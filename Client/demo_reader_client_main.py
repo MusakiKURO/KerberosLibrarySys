@@ -1,3 +1,4 @@
+# coding=utf-8
 # @Time    : 2022/5/19 15:02
 # @Author  : Nisky
 # @File    : demo_reader_client_main.py
