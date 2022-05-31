@@ -84,6 +84,8 @@ class Dialog(demo_reader_Dialog.Ui_Dialog):
     def __init__(self):
         super(Dialog, self).__init__()
         self.setupUi(self)
+        # 如果不在这里初始化的话会报错不存在pushButton_search组件
+        self.pushButton_search.clicked.connect(self.C_S_Search)
 
 
 class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_Dialog):

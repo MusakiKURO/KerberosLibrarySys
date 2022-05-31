@@ -13,7 +13,6 @@ class MainWindow_Test(demo_reader_logic.Reader_Logic):
         super(MainWindow_Test, self).__init__()
         self.pushButton_register.clicked.connect(self.C_AS_Register)
         self.pushButton_login.clicked.connect(self.C_AS_Kerberos)
-        self.pushButton_search.clicked.connect(self.C_S_Search)
 
 
 if __name__ == '__main__':

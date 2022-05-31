@@ -9,7 +9,7 @@ from Client import demo_manager_logic
 import sys
 
 
-class MainWindow_Test(demo_manager_logic.MainWindow_Logic):
+class MainWindow_Test(demo_manager_logic.Reader_Logic):
     def __init__(self):
         super(MainWindow_Test, self).__init__()
         self.pushButton_register.clicked.connect(self.C_AS_Register)

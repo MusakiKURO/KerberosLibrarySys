@@ -90,6 +90,11 @@ class Dialog(demo_manager_Dialog.Ui_Dialog):
         super(Dialog, self).__init__()
         self.setupUi(self)
 
+        self.pushButton_search.clicked.connect(self.C_S_Search)
+        self.pushButton_add.clicked.connect(self.C_S_Add)
+        self.pushButton_modify.clicked.connect(self.C_S_Modify)
+        self.pushButton_del.clicked.connect(self.C_S_Del)
+
 
 class Reader_Logic(demo_manager_MainWindow.Ui_MainWindow, demo_manager_Dialog.Ui_Dialog):
     def __init__(self):

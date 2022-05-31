@@ -19,6 +19,9 @@ class Ui_MainWindow(QMainWindow):
     def __init__(self):
         super(Ui_MainWindow, self).__init__()
         self.setupUi(self)
+        # 在这里做个实验
+        # self.pushButton_register.clicked.connect(self.C_AS_Register)
+        # self.pushButton_login.clicked.connect(self.C_AS_Kerberos)
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
