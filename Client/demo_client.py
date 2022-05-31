@@ -7,6 +7,7 @@ import socket
 import datetime
 import json
 from werkzeug.security import generate_password_hash
+from DES.demo_DES import DES_call
 
 test_key = '0kLllffV'
 
@@ -23,13 +24,17 @@ Server_port = 7790
 
 
 def generate_msg_to_AS_Kerberos(src, result, target, ID_c, ID_tgs, TS_1):
-    dict_msg_origin = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
-                       'data_msg': {'ID_c': ID_c, 'ID_tgs': ID_tgs, 'TS_1': TS_1}}
+    dict_msg_origin = {
+        'control_msg': DES_call(json.dumps({'control_src': src, 'control_result': result, 'control_target': target}),
+                                test_key, 0),
+        'data_msg': DES_call(json.dumps({'ID_c': ID_c, 'ID_tgs': ID_tgs, 'TS_1': TS_1}), test_key, 0)}
     str_msg_origin = json.dumps(dict_msg_origin)
     HMAC = generate_password_hash(str_msg_origin)
-    dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
-                      'data_msg': {'ID_c': ID_c, 'ID_tgs': ID_tgs, 'TS_1': TS_1},
-                      'HMAC': HMAC}
+    dict_msg_final = {
+        'control_msg': DES_call(json.dumps({'control_src': src, 'control_result': result, 'control_target': target}),
+                                test_key, 0),
+        'data_msg': DES_call(json.dumps({'ID_c': ID_c, 'ID_tgs': ID_tgs, 'TS_1': TS_1}), test_key, 0),
+        'HMAC': DES_call(HMAC, test_key, 0)}
     str_msg_final = json.dumps(dict_msg_final)
     return str_msg_final
 

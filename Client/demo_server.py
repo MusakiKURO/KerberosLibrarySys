@@ -28,10 +28,8 @@ def Creat_thread(sock, addr):
                 total_data += data
                 if len(data) < 1024:
                     break
-            if total_data == "quit" or total_data == "exit":
-                print("Client %s exit." % addr[0])
-                break
             if total_data:
+                print(len(total_data))
                 print("Message from %s:\n%s" % (addr[0], total_data.decode('utf-8')))
 
                 # text_json_loads = json.loads(total_data.decode('utf-8'))
@@ -60,7 +58,7 @@ if __name__ == "__main__":
     # 取消主动断开连接四次握手后的TIME_WAIT状态
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     # 绑定地址和端口号
-    srv_addr = ('192.168.43.142', 7788)
+    srv_addr = ('', 7788)
     sock.bind(srv_addr)
 
     # 侦听客户端
