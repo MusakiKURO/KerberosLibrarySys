@@ -1,6 +1,8 @@
+# coding=utf-8
 import datetime
 import random
 import json
+
 
 from werkzeug.security import generate_password_hash
 
@@ -21,7 +23,6 @@ class msgCtoA:
         self.id_c = ID_c
         self.id_tgs = ID_tgs
         self.ts_1 = TS_1
-        self.EKc = "12345678"
 
 
 class ticket_tgs:

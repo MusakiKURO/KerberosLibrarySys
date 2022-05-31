@@ -1,3 +1,4 @@
+# coding=utf-8
 import socket
 import threading
 import json
@@ -18,10 +19,10 @@ SERVER_PORT = 11230
 
 
 def generate_msg_to_C(src, result, target, data_msg):
-    dict_msg_orign = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
+    dict_msg_origin = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
                       'data_msg': data_msg}
-    str_msg_orign = json.dumps(dict_msg_orign)
-    HMAC = generate_password_hash(str_msg_orign)
+    str_msg_origin = json.dumps(dict_msg_origin)
+    HMAC = generate_password_hash(str_msg_origin)
     dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
                       'data_msg': data_msg,
                       'HMAC': RSA_call(HMAC, myTGS.sKey, 65537, 0)}
@@ -30,7 +31,7 @@ def generate_msg_to_C(src, result, target, data_msg):
 
 
 def create_msgAtoT(ticket_tgs, id_v, TS_4):
-    EK_v = int(db.getClientEk(id_v))  # 从数据库中获取，作为参数向下传递
+    EK_v = db.getClientEk(id_v)  # 从数据库中获取，作为参数向下传递
     ticket_V_tmp = ticket_v(ticket_tgs.id_c, ticket_tgs.ad_c, id_v, TS_4)
     ticket_V = \
         {
@@ -52,7 +53,7 @@ def create_msgAtoT(ticket_tgs, id_v, TS_4):
 
 
 def send_msg(msg_TtoC, EK_CtoTGS, src, result, target):
-    send_data = generate_msg_to_C(src, result, target, DES_call(msg_TtoC, EK_CtoTGS, 0))
+    send_data = generate_msg_to_C(src, result, target, DES_call(json.dumps(msg_TtoC), EK_CtoTGS, 0))
     sock.sendall(send_data.encode('utf-8'))
     print("---------------发送完成--- --------------")
 
@@ -80,7 +81,7 @@ def create_Thread(sock, addr):
                                      final_dumps_data)
     if hash_check:
         if msg_data["control_msg"]["control_target"] == "00010":
-            msg_CtoT = msgCtoT(["data_msg"]["ID_v"], ["data_msg"]["ticket_TGS"])
+            msg_CtoT = msgCtoT(msg_data["data_msg"]["ID_v"], msg_data["data_msg"]["ticket_TGS"])
 
             ticket_tgs = loadticket_tgs(msg_CtoT.ticket_tgs)
             # 验证时钟同步
@@ -99,8 +100,8 @@ def create_Thread(sock, addr):
 
 
 def loadticket_tgs(ticket_TGS):
-    ticket_msg_orign = DES_call(ticket_TGS, myTGS.EKtgs, 1)
-    ticket_msg_json = json.loads(ticket_msg_orign)
+    ticket_msg_origin = DES_call(ticket_TGS, myTGS.EKtgs, 1)
+    ticket_msg_json = json.loads(ticket_msg_origin)
     return ticket_tgs(ticket_msg_json["EKc_tgs"], ticket_msg_json["ID_c"], ticket_msg_json["AD_c"],
                       ticket_msg_json["ID_tgs"], ticket_msg_json["TS_2"], ticket_msg_json["Lifetime_2"])
 
@@ -109,17 +110,21 @@ if __name__ == "__main__":
     myTGS = myTGS()
 
     db = linkDB.link_DB()
-    # Create The Socket
+    # 创建TCP套接字
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # 取消主动断开连接四次握手后的TIME_WAIT状态
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    # 绑定地址和端口号
+    srv_addr = (SERVER_IP, SERVER_PORT)
+    s.bind(srv_addr)
 
-    # Listen The Port
-    s.bind((SERVER_IP, SERVER_PORT))
-    s.listen(10)
+    # 侦听客户端
+    s.listen(5)
     print('Waiting for connection...')
-    # 一旦监听到立即进入连接
     while True:
         # 开始一个新连接
         sock, addr = s.accept()
 
         # 创建一个线程来处理连接
         t = threading.Thread(target=create_Thread(sock, addr))
+        t.start()

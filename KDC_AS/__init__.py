@@ -1,7 +1,8 @@
+# coding=utf-8
 import socket
 import threading
 import json
-from datetime import datetime, timedelta
+from datetime import *
 import logging
 
 from werkzeug.security import check_password_hash
@@ -13,25 +14,25 @@ import linkDB
 from DES.demo_DES import DES_call
 from KDC_AS.myAS import *
 
-SERVER_IP = '127.0.0.1'
-SERVER_PORT = 11220
+SERVER_IP = '192.168.43.193'
+SERVER_PORT = 7788
 
-"""
+'''
 dict_user = \
-    {"control_msg":{"control_src": 00, "control_type": 0, "control_target": 00000},
-     "data_msg":{"ID_c": "张三", "ID_tgs": "TGS", "TS_1": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+    {'control_msg':{'control_src': 00, 'control_type': 0, 'control_target': 00000},
+     'data_msg':{'ID_c': '张三', 'ID_tgs': 'TGS', 'TS_1': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
      }
-"""
+'''
 
 
 def create_Thread(sock, addr):
     print('Accept new connection from %s:%s...' % addr)
-    sock.send('connect success!'.encode())
+    # sock.send('connect success!'.encode())
     # 客户端返回信息进行确认开始工作
     data = sock.recv(1024 * 10).decode()
     msg_data = json.loads(data)
     print(msg_data)
-    # file = open("from_client.json", 'w')
+    # file = open('from_client.json', 'w')
     # file.write(msg_data)
     final_dumps_data = json.dumps(
         {'control_msg': {'control_src': msg_data['control_msg']['control_src'],
@@ -40,48 +41,52 @@ def create_Thread(sock, addr):
          'data_msg': {'ID_c': msg_data['data_msg']['ID_c'], 'ID_tgs': msg_data['data_msg']['ID_tgs'],
                       'TS_1': msg_data['data_msg']['TS_1']}
          })
-    Pk_c = int(db.getClientPk(msg_data["data_msg"]["ID_c"]))
-    EK_c = int(db.getClientEk(msg_data["data_msg"]["ID_c"]))  # 从数据库中获取，作为参数向下传递
-    TS_2 = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    Pk_c = int(db.getClientPk(msg_data['data_msg']['ID_c']))
+    EK_c = db.getClientEk(msg_data['data_msg']['ID_c'])  # 从数据库中获取，作为参数向下传递
+    TS_2 = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     hash_check = check_password_hash(RSA_call(msg_data['HMAC'], Pk_c, 65537, 1),
                                      final_dumps_data)
+    print(hash_check)
     if hash_check:
-        if msg_data["control_msg"]["control_target"] == "00001":
-            msg_CtoA = msgCtoA(["data_msg"]["ID_c"], ["data_msg"]["ID_tgs"], ["data_msg"]["TS_1"])
+        if msg_data['control_msg']['control_target'] == '00011':
+            msg_CtoA = msgCtoA(msg_data['data_msg']['ID_c'], msg_data['data_msg']['ID_tgs'],
+                               msg_data['data_msg']['TS_1'])
+            print('2')
             # 验证时钟同步
-            if datetime.strptime(msg_CtoA.ts_1, "%Y-%m-%d %H:%M:%S") - datetime.strptime(TS_2,
-                                                                                         "%Y-%m-%d %H:%M:%S") < timedelta(
-                minutes=5):
+            if datetime.datetime.strptime(msg_CtoA.ts_1, '%Y-%m-%d %H:%M:%S') - datetime.datetime.strptime(TS_2,'%Y-%m-%d %H:%M:%S') < timedelta(minutes=5):
                 msg_AtoC = create_msgAtoC(msg_CtoA, TS_2, addr)
-                send_msg(msg_AtoC, EK_c, "01", "0", "00001")
-        elif msg_data["control_msg"]["control_target"] == "00000":
-            print("")
+                print(msg_AtoC)
+                send_msg(msg_AtoC, EK_c, '01', '0', '00001')
+        elif msg_data['control_msg']['control_target'] == '00001':
+            print('')
     else:
-        tipsstr = { "tips": "error"}
+        tipsstr = {'tips': 'error'}
         json.dumps(tipsstr)
-        send_data = generate_msg_to_C("01", "1", "00001", tipsstr)
+        send_data = generate_msg_to_C('01', '1', '00001', tipsstr)
         sock.sendall(send_data.encode('utf-8'))
+
+    sock.close()
 
 
 def create_msgAtoC(msg_CtoA, TS_2, addr):
     ticket_temp = ticket_tgs(msg_CtoA.id_c, addr, TS_2)
     ticket_TGS = \
         {
-            "EKc_tgs": ticket_temp.EKc_tgs,
-            "ID_c": ticket_temp.id_c,
-            "AD_c": ticket_temp.ad_c,
-            "ID_tgs": ticket_temp.id_tgs,
-            "TS_2": ticket_temp.ts_2,
-            "LifeTime_2": ticket_temp.lifetime_2
+            'EKc_tgs': ticket_temp.EKc_tgs,
+            'ID_c': ticket_temp.id_c,
+            'AD_c': ticket_temp.ad_c,
+            'ID_tgs': ticket_temp.id_tgs,
+            'TS_2': ticket_temp.ts_2,
+            'LifeTime_2': ticket_temp.lifetime_2
         }
     msg_AtoC_tmp = msgAtoC(TS_2, myas.EKtgs)
     msg_AtoC = \
         {
-            "EKc_tgs": msg_AtoC_tmp.Ekc_tgs,
-            "ID_tgs": msg_AtoC_tmp.id_tgs,
-            "TS_2": msg_AtoC_tmp.ts_2,
-            "LifeTime_2": msg_AtoC_tmp.lifetime_2,
-            "ticket_TGS": DES_call(json.dumps(ticket_TGS), myas.EKtgs, 0)  # 加密
+            'EKc_tgs': msg_AtoC_tmp.Ekc_tgs,
+            'ID_tgs': msg_AtoC_tmp.id_tgs,
+            'TS_2': msg_AtoC_tmp.ts_2,
+            'LifeTime_2': msg_AtoC_tmp.lifetime_2,
+            'ticket_TGS': DES_call(json.dumps(ticket_TGS), myas.EKtgs, 0)  # 加密
         }
     return json.dumps(msg_AtoC)
 
@@ -100,26 +105,32 @@ def generate_msg_to_C(src, result, target, data_msg):
 
 def send_msg(msg_AtoC, EK_c, src, result, target):
     # 这里开始使用传数据
-    send_data = generate_msg_to_C(src, result, target, DES_call(msg_AtoC, EK_c, 0))
+    send_data = generate_msg_to_C(src, result, target, DES_call(json.dumps(msg_AtoC), EK_c, 0))
+    print(send_data)
     sock.sendall(send_data.encode('utf-8'))
-    print("---------------发送完成---- -------------")
+    print('---------------发送完成---- -------------')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     myas = myAS()
 
     db = linkDB.link_DB()
-    # Create The Socket
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    # Listen The Port
-    s.bind((SERVER_IP, SERVER_PORT))
-    s.listen(10)
+    # 创建TCP套接字
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # 取消主动断开连接四次握手后的TIME_WAIT状态
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    # 绑定地址和端口号
+    srv_addr = (SERVER_IP, SERVER_PORT)
+    s.bind(srv_addr)
+
+    # 侦听客户端
+    s.listen(5)
     print('Waiting for connection...')
-    # 一旦监听到立即进入连接
     while True:
         # 开始一个新连接
         sock, addr = s.accept()
 
         # 创建一个线程来处理连接
         t = threading.Thread(target=create_Thread(sock, addr))
+        t.start()
