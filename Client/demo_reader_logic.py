@@ -315,10 +315,9 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
         # 接收数据,将收到的数据拼接起来
         total_data = bytes()
         while True:
-            recv_data = self.socket.recv(1024)
-            # QApplication.processEvents()
+            recv_data = self.socket.recv(9192)
             total_data += recv_data
-            if len(recv_data) < 1024:
+            if len(recv_data) < 8192:
                 break
         if total_data:
             ###
@@ -343,6 +342,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
                      'data_msg': final_loads_data['data_msg']})
                 hash_check = check_password_hash(RSA_call(final_loads_data['HMAC'], AS_n, AS_e, 1),
                                                  final_dumps_data)
+                print(hash_check)
                 if not hash_check:
                     QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
                 else:

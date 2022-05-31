@@ -22,14 +22,24 @@ def Creat_thread(sock, addr):
     try:
         while True:
             # 将收到的数据拼接起来
-            total_data = bytes()
-            while True:
+            total_data = b''
+            data = sock.recv(1024)
+            total_data += data
+            num = len(data)
+            # 如果没有数据了，读出来的data长度为0，len(data)==0
+            while len(data) > 0:
                 data = sock.recv(1024)
+                num += len(data)
                 total_data += data
-                if len(data) < 1024:
-                    break
+            # total_data = bytes()
+            # while True:
+            #     data = sock.recv(1024)
+            #     total_data += data
+            #     if len(data) < 1024:
+            #         break
+            print(len(total_data))
+            print(total_data.decode('utf-8'))
             if total_data:
-                print(len(total_data))
                 print("Message from %s:\n%s" % (addr[0], total_data.decode('utf-8')))
 
                 # text_json_loads = json.loads(total_data.decode('utf-8'))
@@ -43,7 +53,6 @@ def Creat_thread(sock, addr):
                 # hash_check = check_password_hash(RSA_call(text_json_loads['HMAC'],))
                 # print(text_josn_dumps)
                 # sock.sendall("I have received".encode('utf-8'))
-        sock.close()
     except socket.error as e:
         print("Socket error: %s" % str(e))
     except Exception as e:

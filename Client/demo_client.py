@@ -15,7 +15,7 @@ test_key = '0kLllffV'
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # 目的信息
-AS_ip = '127.0.0.1'
+AS_ip = '192.168.43.229'
 AS_port = 7788
 TGS_ip = '127.0.0.1'
 TGS_port = 7789
@@ -39,6 +39,15 @@ def generate_msg_to_AS_Kerberos(src, result, target, ID_c, ID_tgs, TS_1):
     return str_msg_final
 
 
+def generate_msg_to_AS(src, result, target, ID_c, ID_tgs, TS_1):
+    dict_msg_final = DES_call(json.dumps({
+        'control_msg': DES_call(json.dumps({'control_src': src, 'control_result': result, 'control_target': target}),
+                                test_key, 0),
+        'data_msg': DES_call(json.dumps({'ID_c': ID_c, 'ID_tgs': ID_tgs, 'TS_1': TS_1}), test_key, 0)}), test_key, 0)
+    str_msg_final = json.dumps(dict_msg_final)
+    return str_msg_final
+
+
 if __name__ == "__main__":
     # 链接AS
     sock.connect((AS_ip, AS_port))
@@ -46,11 +55,10 @@ if __name__ == "__main__":
     try:
         # 发送数据
         print("start...")
-        send_data = generate_msg_to_AS_Kerberos('00', '0', '00001', '张三', 'TGS',
-                                                datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-        for i in range(2):
-            sock.sendall(send_data.encode('utf-8'))
-
+        send_data = generate_msg_to_AS('00', '0', '00001', '张三', 'TGS',
+                                       datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        sock.sendall(send_data.encode('utf-8'))
+        print(send_data.encode('utf-8'))
         # 接收数据
         # 将收到的数据拼接起来
         total_data = bytes()
