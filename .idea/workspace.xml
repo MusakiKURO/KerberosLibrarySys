@@ -5,10 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3cfbabc-79c7-44f1-854f-b18303507d47" name="变更" comment="KDC hashmac">
-      <change beforePath="$PROJECT_DIR$/KDC_AS/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/KDC_AS/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KDC_AS/myAS.py" beforeDir="false" afterPath="$PROJECT_DIR$/KDC_AS/myAS.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KDC_TGS/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/KDC_TGS/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KDC_TGS/myTGS.py" beforeDir="false" afterPath="$PROJECT_DIR$/KDC_TGS/myTGS.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/V_Server/Server-2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/V_Server/library_db_management.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/KerberosLibrarySys.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/KerberosLibrarySys.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/demo_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/demo_server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/V_Server/Server.py" beforeDir="false" afterPath="$PROJECT_DIR$/V_Server/Server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/V_Server/control_target.py" beforeDir="false" afterPath="$PROJECT_DIR$/V_Server/control_target.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
