@@ -1,7 +1,6 @@
 import json
 import operator
 import threading
-import MySQLdb
 from socket import *
 from DES.demo_DES import *
 from RSA.demo_RSA import *
@@ -10,16 +9,14 @@ from datetime import datetime, timedelta
 from control_target import control_target
 from library_db_management import *
 
-# 创建线程类
-class MyThread(threading.Thread):
-    def __init__(self, func, argc, name=''):
-        threading.Thread.__init__(self)
-        self.name = name
-        self.func = func
-        self.argc = argc
 
-    def run(self):
-        self.func(*self.argc)
+# 创建线程类
+# class MyThread(threading.Thread):
+#     def __init__(self, func, argc, name=''):
+#         threading.Thread.__init__(self)
+#         self.name = name
+#         self.func = func
+#         self.argc = argc
 
 
 # 创建用户类
@@ -55,7 +52,7 @@ class con_msg:
         self.target = target
 
     def create_con_msg(self):
-        control_msg = {'con_src': self.src, 'con_result': self.result, 'con_target': self.target}
+        control_msg = {'control_src': self.src, 'control_result': self.result, 'control_target': self.target}
         return control_msg
 
 
@@ -84,7 +81,7 @@ class data_msg:
         return data_tips
 
     def create_Kdata_msg(self):
-        data_tips = {'ST_6': self.tips}
+        data_tips = {'TS_6': self.tips}
         return data_tips
 
 
@@ -126,6 +123,7 @@ def V_to_C_Ker(sock):
                 str_msg_final = json.dumps(create_send_msg(con_msg_dt, data_msg_dt, EKc_v))
                 sock.sendall(str_msg_final.encode('utf-8'))
 
+
 #
 # def create_send_msg(control_msg_dt, data_msg_dt, EKc_v):
 #     dict_msg_origin = {'control_msg': control_msg_dt,
@@ -157,11 +155,3 @@ C_e = 65537
 S_n = 10469390129546136402029942747457300548433313561152500694655265739940475404319462139530628254855322586969734523342743903668412559804045845034210748615835404649037119900853265926666451144690640278649024315138788684707831566351503299322478262056212399670974114581850558320339645904277358701922873391829160151236405533264476749760758974104883363191923240109341780901794063881916334145879532060236519390370906919172355572965775460432228690239610801536843235695767284700782343713226170627931582080505723902106175293364974962491182627509560208769591792202469015835052126845105188154599166838191586917087104257804552326005823
 S_e = 65537
 S_d = 8110714186754298143092669075085860864016604301796462536720282468655230133025737091234707993278826287221376645546146352091988380401468111815874210426525400382088173880496849377126036552149674050194062324003640372613730019482102102830475400477867707647507480439289508934499359168896502067748418875596229903696601538947599762970083498153007126984514457653542261324691019431373092778414249493081800991492478535451747689826738343974509191893347816832399493117974542984766167012840616050188269725303380603488917126926095089931521535057761266939722944819520741894548836638416431206454098874309067605170447054752532589197921
-# 连接
-server_sock = socket(AF_INET, SOCK_STREAM)
-server_sock.bind(ADDR)
-server_sock.listen(5)
-while True:
-    client_sock, client_addr = server_sock.accept()
-    t = MyThread(V_to_C_Ker, client_sock)
-    t.start()
