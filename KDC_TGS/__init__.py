@@ -1,7 +1,9 @@
 # coding=utf-8
+import multiprocessing
 import socket
 import threading
 import json
+import time
 from datetime import datetime, timedelta
 import logging
 
@@ -14,18 +16,18 @@ import linkDB
 from DES.demo_DES import DES_call
 from KDC_TGS.myTGS import *
 
-SERVER_IP = '127.0.0.1'
-SERVER_PORT = 11230
+SERVER_IP = ''
+SERVER_PORT = 8788
 
 
 def generate_msg_to_C(src, result, target, data_msg):
     dict_msg_origin = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
-                      'data_msg': data_msg}
+                       'data_msg': data_msg}
     str_msg_origin = json.dumps(dict_msg_origin)
     HMAC = generate_password_hash(str_msg_origin)
     dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
                       'data_msg': data_msg,
-                      'HMAC': RSA_call(HMAC, myTGS.sKey, 65537, 0)}
+                      'HMAC': RSA_call(HMAC, myTGS.pKey, myTGS.sKey, 0)}
     str_msg_final = json.dumps(dict_msg_final)
     return str_msg_final
 
@@ -35,36 +37,52 @@ def create_msgAtoT(ticket_tgs, id_v, TS_4):
     ticket_V_tmp = ticket_v(ticket_tgs.id_c, ticket_tgs.ad_c, id_v, TS_4)
     ticket_V = \
         {
-            "EKc_v": ticket_V_tmp.EKc_v,
-            "ID_c": ticket_V_tmp.id_c,
-            "AD_c": ticket_V_tmp.ad_c,
-            "ID_v": ticket_V_tmp.id_v,
-            "TS_4": ticket_V_tmp.ts_4,
-            "LifeTime_4": ticket_V_tmp.lifetime_4
+            'EKc_v': ticket_V_tmp.EKc_v,
+            'ID_c': ticket_V_tmp.id_c,
+            'AD_c': ticket_V_tmp.ad_c,
+            'ID_v': ticket_V_tmp.id_v,
+            'TS_4': ticket_V_tmp.ts_4,
+            'Lifetime_4': ticket_V_tmp.lifetime_4
         }
     msgttoc = \
         {
-            "EKc_v": ticket_V_tmp.EKc_v,
-            "ID_v": ticket_V_tmp.id_v,
-            "TS_4": ticket_V_tmp.ts_4,
-            "ticket_V": DES_call(json.dumps(ticket_V), EK_v, 0)  # 加密
+            'EKc_v': ticket_V_tmp.EKc_v,
+            'ID_v': ticket_V_tmp.id_v,
+            'TS_4': ticket_V_tmp.ts_4,
+            'ticket_V': DES_call(json.dumps(ticket_V), EK_v, 0)  # 加密
         }
-    return json.dumps(msgttoc)
+    return msgttoc
 
 
 def send_msg(msg_TtoC, EK_CtoTGS, src, result, target):
     send_data = generate_msg_to_C(src, result, target, DES_call(json.dumps(msg_TtoC), EK_CtoTGS, 0))
+    # print(send_data)
+    key_values = '@'
     sock.sendall(send_data.encode('utf-8'))
-    print("---------------发送完成--- --------------")
+    time.sleep(1)
+    sock.send(key_values.encode('utf-8'))
+    print('---------------发送完成--- --------------')
 
 
 def create_Thread(sock, addr):
     print('Accept new connection from %s:%s...' % addr)
-    sock.send('connect success!'.encode())
+    #sock.send('connect success!'.encode())
     # 客户端返回信息进行确认开始工作
-    data = sock.recv(1024 * 10).decode()
-    msg_data = json.loads(data)
-    # file = open("from_client.json", 'w')
+    total_data = bytes()
+    while True:
+        data = sock.recv(8192)
+        if len(data) < 8192:
+            key_values = data.decode('utf-8')
+            if key_values == '@':
+                break
+            else:
+                total_data += data
+        else:
+            total_data += data
+    # data = sock.recv(1024 * 10).decode()
+    msg_data = json.loads(total_data)
+    # print(msg_data)
+    # file = open('from_client.json', 'w')
     # file.write(msg_data)
 
     final_dumps_data = json.dumps(
@@ -75,38 +93,42 @@ def create_Thread(sock, addr):
                       'Authenticator': msg_data['data_msg']['Authenticator']}
          })
 
-    TS_4 = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    Pk_c = int(db.getClientPk(msg_data["data_msg"]["ID_c"]))
+    TS_4 = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    msg_CtoT = msgCtoT(msg_data['data_msg']['ID_v'], msg_data['data_msg']['ticket_TGS'])
+    # print('3')
+    ticket_tgs = loadticket_tgs(msg_CtoT.ticket_tgs)
+    Pk_c = int(db.getClientPk(ticket_tgs.id_c))
     hash_check = check_password_hash(RSA_call(msg_data['HMAC'], Pk_c, 65537, 1),
                                      final_dumps_data)
+    # print(hash_check)
     if hash_check:
-        if msg_data["control_msg"]["control_target"] == "00010":
-            msg_CtoT = msgCtoT(msg_data["data_msg"]["ID_v"], msg_data["data_msg"]["ticket_TGS"])
-
-            ticket_tgs = loadticket_tgs(msg_CtoT.ticket_tgs)
+        if msg_data['control_msg']['control_target'] == '00100':
             # 验证时钟同步
-            if datetime.strptime(ticket_tgs.lifetime_2, "%Y-%m-%d %H:%M:%S") - datetime.strptime(TS_4,
-                                                                                                 "%Y-%m-%d %H:%M:%S") < timedelta(
-                minutes=5):
+            if datetime.datetime.strptime(ticket_tgs.lifetime_2, '%Y-%m-%d %H:%M:%S') - datetime.datetime.strptime(TS_4, '%Y-%m-%d %H:%M:%S') < timedelta(minutes=5):
                 EK_CtoTGS = ticket_tgs.EKc_tgs
                 msg_TtoC = create_msgAtoT(ticket_tgs, msg_CtoT.id_v, TS_4)
-
-                send_msg(msg_TtoC, EK_CtoTGS, "10", "0", "00000")
+                # print(msg_TtoC)
+                send_msg(msg_TtoC, EK_CtoTGS, '10', '0', '00000')
     else:
-        tipsstr = { "tips": "error"}
+        tipsstr = {'tips': 'error'}
         json.dumps(tipsstr)
-        send_data = generate_msg_to_C("10", "1", "00001", tipsstr)
+        send_data = generate_msg_to_C('10', '1', '00001', tipsstr)
+        key_values = '@'
         sock.sendall(send_data.encode('utf-8'))
+        time.sleep(1)
+        sock.send(key_values.encode('utf-8'))
+    sock.close()
 
 
 def loadticket_tgs(ticket_TGS):
     ticket_msg_origin = DES_call(ticket_TGS, myTGS.EKtgs, 1)
     ticket_msg_json = json.loads(ticket_msg_origin)
-    return ticket_tgs(ticket_msg_json["EKc_tgs"], ticket_msg_json["ID_c"], ticket_msg_json["AD_c"],
-                      ticket_msg_json["ID_tgs"], ticket_msg_json["TS_2"], ticket_msg_json["Lifetime_2"])
+    # print(ticket_msg_json)
+    return ticket_tgs(ticket_msg_json['EKc_tgs'], ticket_msg_json['ID_c'], ticket_msg_json['AD_c'],
+                      ticket_msg_json['ID_tgs'], ticket_msg_json['TS_2'], ticket_msg_json['LifeTime_2'])
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     myTGS = myTGS()
 
     db = linkDB.link_DB()

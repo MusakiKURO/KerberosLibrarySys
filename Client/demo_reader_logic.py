@@ -18,6 +18,7 @@ import sys
 import time
 from datetime import datetime, timedelta
 
+socket.setdefaulttimeout(10)
 # 要连接的目标IP和Port
 # AS
 AS_IP = '192.168.43.193'
@@ -139,7 +140,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
         HMAC = generate_password_hash(str_msg_origin)
         dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
                           'data_msg': {'ID_c': ID_c, 'ID_tgs': ID_tgs, 'TS_1': TS_1},
-                          'HMAC': RSA_call(HMAC, C_n_1, C_d_1, 0)}
+                          'HMAC': RSA_call(HMAC, C_n_2, C_d_2, 0)}
         str_msg_final = json.dumps(dict_msg_final)
         self.textBrowser_showtext.append(str_msg_final)
         return str_msg_final
@@ -156,7 +157,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
                           'data_msg': {'ID_v': ID_v, 'ticket_TGS': Ticket_tgs,
                                        'Authenticator': DES_call(json.dumps({'ID_c': ID_c, 'AD_c': AD_c, 'TS_3': TS_3}),
                                                                  EKc_tgs, 0)},
-                          'HMAC': RSA_call(HMAC, C_n_1, C_d_1, 0)}
+                          'HMAC': RSA_call(HMAC, C_n_2, C_d_2, 0)}
         str_msg_final = json.dumps(dict_msg_final)
         self.textBrowser_showtext.append(str_msg_final)
         return str_msg_final
@@ -555,7 +556,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
         time.sleep(1)
         self.C_TGS_Kerberos()
         time.sleep(1)
-        self.C_S()
+        # self.C_S()
 
     def C_S_Select(self, option):
         if option == 0:

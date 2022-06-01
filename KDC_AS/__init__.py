@@ -1,8 +1,10 @@
 # coding=utf-8
+import multiprocessing
 import socket
 import threading
 import json
 from datetime import *
+import time
 import logging
 
 from werkzeug.security import check_password_hash
@@ -14,7 +16,7 @@ import linkDB
 from DES.demo_DES import DES_call
 from KDC_AS.myAS import *
 
-SERVER_IP = '192.168.43.142'
+SERVER_IP = ''
 SERVER_PORT = 7788
 
 '''
@@ -29,9 +31,20 @@ def create_Thread(sock, addr):
     print('Accept new connection from %s:%s...' % addr)
     # sock.send('connect success!'.encode())
     # 客户端返回信息进行确认开始工作
-    data = sock.recv(1024 * 10).decode()
-    msg_data = json.loads(data)
-    print(msg_data)
+    total_data = bytes()
+    while True:
+        data = sock.recv(8192)
+        if len(data) < 8192:
+            key_values = data.decode('utf-8')
+            if key_values == '@':
+                break
+            else:
+                total_data += data
+        else:
+            total_data += data
+    # data = sock.recv(1024 * 10).decode()
+    msg_data = json.loads(total_data)
+    # print(msg_data)
     # file = open('from_client.json', 'w')
     # file.write(msg_data)
     final_dumps_data = json.dumps(
@@ -46,16 +59,18 @@ def create_Thread(sock, addr):
     TS_2 = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     hash_check = check_password_hash(RSA_call(msg_data['HMAC'], Pk_c, 65537, 1),
                                      final_dumps_data)
-    print(hash_check)
+    # print(hash_check)
     if hash_check:
         if msg_data['control_msg']['control_target'] == '00011':
             msg_CtoA = msgCtoA(msg_data['data_msg']['ID_c'], msg_data['data_msg']['ID_tgs'],
                                msg_data['data_msg']['TS_1'])
-            print('2')
+            # print('2')
             # 验证时钟同步
-            if datetime.datetime.strptime(msg_CtoA.ts_1, '%Y-%m-%d %H:%M:%S') - datetime.datetime.strptime(TS_2,'%Y-%m-%d %H:%M:%S') < timedelta(minutes=5):
+            if datetime.datetime.strptime(msg_CtoA.ts_1, '%Y-%m-%d %H:%M:%S') - datetime.datetime.strptime(TS_2,
+                                                                                                           '%Y-%m-%d %H:%M:%S') < timedelta(
+                    minutes=5):
                 msg_AtoC = create_msgAtoC(msg_CtoA, TS_2, addr)
-                print(msg_AtoC)
+                # print(msg_AtoC)
                 send_msg(msg_AtoC, EK_c, '01', '0', '00001')
         elif msg_data['control_msg']['control_target'] == '00001':
             print('')
@@ -63,7 +78,10 @@ def create_Thread(sock, addr):
         tipsstr = {'tips': 'error'}
         json.dumps(tipsstr)
         send_data = generate_msg_to_C('01', '1', '00001', tipsstr)
+        key_values = '@'
         sock.sendall(send_data.encode('utf-8'))
+        time.sleep(1)
+        sock.send(key_values.encode('utf-8'))
 
     sock.close()
 
@@ -79,7 +97,7 @@ def create_msgAtoC(msg_CtoA, TS_2, addr):
             'TS_2': ticket_temp.ts_2,
             'LifeTime_2': ticket_temp.lifetime_2
         }
-    msg_AtoC_tmp = msgAtoC(TS_2, myas.EKtgs)
+    msg_AtoC_tmp = msgAtoC(TS_2, ticket_temp.EKc_tgs)
     msg_AtoC = \
         {
             'EKc_tgs': msg_AtoC_tmp.Ekc_tgs,
@@ -88,7 +106,7 @@ def create_msgAtoC(msg_CtoA, TS_2, addr):
             'LifeTime_2': msg_AtoC_tmp.lifetime_2,
             'ticket_TGS': DES_call(json.dumps(ticket_TGS), myas.EKtgs, 0)  # 加密
         }
-    return json.dumps(msg_AtoC)
+    return msg_AtoC
 
 
 def generate_msg_to_C(src, result, target, data_msg):
@@ -98,7 +116,7 @@ def generate_msg_to_C(src, result, target, data_msg):
     HMAC = generate_password_hash(str_msg_orign)
     dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
                       'data_msg': data_msg,
-                      'HMAC': RSA_call(HMAC, myas.sKey, 65537, 0)}
+                      'HMAC': RSA_call(HMAC, myas.pKey, myas.sKey, 0)}
     str_msg_final = json.dumps(dict_msg_final)
     return str_msg_final
 
@@ -106,8 +124,11 @@ def generate_msg_to_C(src, result, target, data_msg):
 def send_msg(msg_AtoC, EK_c, src, result, target):
     # 这里开始使用传数据
     send_data = generate_msg_to_C(src, result, target, DES_call(json.dumps(msg_AtoC), EK_c, 0))
-    print(send_data)
+    # print(send_data)
+    key_values = '@'
     sock.sendall(send_data.encode('utf-8'))
+    time.sleep(1)
+    sock.send(key_values.encode('utf-8'))
     print('---------------发送完成---- -------------')
 
 

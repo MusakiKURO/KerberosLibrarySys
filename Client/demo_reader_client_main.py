@@ -5,7 +5,7 @@
 # @Software: PyCharm
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import QCoreApplication
-from KerberosLibrarySys.Client import demo_reader_logic
+from Client import demo_reader_logic
 import sys
 
 
