@@ -8,7 +8,7 @@ import datetime
 import json
 from werkzeug.security import generate_password_hash
 from DES.demo_DES import DES_call
-
+import time
 test_key = '0kLllffV'
 
 # 创建socket
@@ -71,6 +71,7 @@ if __name__ == "__main__":
         #         sock.send(send_data.encode('utf-8')[start:length])
         key_values = '@'
         sock.sendall(send_data.encode('utf-8'))
+        time.sleep(1)
         sock.send(key_values.encode('utf-8'))
         print(send_data.encode('utf-8'))
         # 接收数据
