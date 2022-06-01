@@ -21,7 +21,6 @@ def Creat_thread(sock, addr):
 
     try:
         while True:
-            # # 将收到的数据拼接起来
             total_data = bytes()
             while True:
                 data = sock.recv(8192)
@@ -33,7 +32,6 @@ def Creat_thread(sock, addr):
                         total_data += data
                 else:
                     total_data += data
-            print(len(total_data))
             print(total_data.decode('utf-8'))
             if total_data:
                 print("Message from %s:\n%s" % (addr[0], total_data.decode('utf-8')))

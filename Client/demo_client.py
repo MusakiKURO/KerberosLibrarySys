@@ -69,8 +69,9 @@ if __name__ == "__main__":
         #         sock.send(send_data.encode('utf-8')[start:start + size])
         #     else:
         #         sock.send(send_data.encode('utf-8')[start:length])
-        key_values = '@'
+
         sock.sendall(send_data.encode('utf-8'))
+        key_values = '@'
         time.sleep(1)
         sock.send(key_values.encode('utf-8'))
         print(send_data.encode('utf-8'))
