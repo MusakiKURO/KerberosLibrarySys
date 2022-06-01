@@ -1,7 +1,7 @@
 # coding=utf-8
 import datetime
 import json
-from random import random
+import random
 
 from werkzeug.security import generate_password_hash
 
