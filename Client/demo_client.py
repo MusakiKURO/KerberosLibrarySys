@@ -15,7 +15,7 @@ test_key = '0kLllffV'
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # 目的信息
-AS_ip = '192.168.43.229'
+AS_ip = '192.168.43.142'
 AS_port = 7788
 TGS_ip = '127.0.0.1'
 TGS_port = 7789
@@ -57,7 +57,21 @@ if __name__ == "__main__":
         print("start...")
         send_data = generate_msg_to_AS('00', '0', '00001', '张三', 'TGS',
                                        datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
+        # length = len(send_data.encode('utf-8'))
+        # r = length // 1024
+        # if length % 1024 > 0:
+        #     r = r + 1
+        # for i in range(r):
+        #     start = 1024 * i
+        #     size = 1024
+        #     if i < r - 1:
+        #         sock.send(send_data.encode('utf-8')[start:start + size])
+        #     else:
+        #         sock.send(send_data.encode('utf-8')[start:length])
+        key_values = '@'
         sock.sendall(send_data.encode('utf-8'))
+        sock.send(key_values.encode('utf-8'))
         print(send_data.encode('utf-8'))
         # 接收数据
         # 将收到的数据拼接起来
