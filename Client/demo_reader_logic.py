@@ -20,14 +20,14 @@ from datetime import datetime, timedelta
 
 # 要连接的目标IP和Port
 # AS
-AS_IP = '192.168.43.142'
+AS_IP = '192.168.43.193'
 AS_Port = 7788
 # TGS
 TGS_IP = '192.168.43.193'
-TGS_Port = 11230
+TGS_Port = 8788
 # Server
-S_IP = ''
-S_Port = None
+S_IP = '192.168.43.229'
+S_Port = 21567
 
 # 主体的密钥部分
 # AS
@@ -61,6 +61,7 @@ global EKc_tgs
 global ST
 # C和S通信要用到的对称密钥
 global EKc_v
+key_value = '@'
 
 
 def get_host_ip():
@@ -152,7 +153,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
         str_msg_origin = json.dumps(dict_msg_origin)
         HMAC = generate_password_hash(str_msg_origin)
         dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
-                          'data_msg': {'ID_v': ID_v, 'tick_tgs': TGT,
+                          'data_msg': {'ID_v': ID_v, 'ticket_TGS': Ticket_tgs,
                                        'Authenticator': DES_call(json.dumps({'ID_c': ID_c, 'AD_c': AD_c, 'TS_3': TS_3}),
                                                                  EKc_tgs, 0)},
                           'HMAC': RSA_call(HMAC, C_n_1, C_d_1, 0)}
@@ -162,14 +163,14 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
 
     def generate_msg_to_S_Kerberos(self, src, result, target, Ticket_v, ID_c, AD_c, TS_5):
         dict_msg_origin = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
-                           'data_msg': {'tick_v': Ticket_v,
+                           'data_msg': {'ticket_V': Ticket_v,
                                         'Authenticator': DES_call(
                                             json.dumps({'ID_c': ID_c, 'AD_c': AD_c, 'TS_5': TS_5}),
                                             EKc_v, 0)}}
         str_msg_origin = json.dumps(dict_msg_origin)
         HMAC = generate_password_hash(str_msg_origin)
         dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
-                          'data_msg': {'ticket_V': ST,
+                          'data_msg': {'ticket_V': Ticket_v,
                                        'Authenticator': DES_call(json.dumps({'ID_c': ID_c, 'AD_c': AD_c, 'TS_5': TS_5}),
                                                                  EKc_v, 0)},
                           'HMAC': RSA_call(HMAC, C_n_1, C_d_1, 0)}
@@ -305,68 +306,80 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
         ###
         print('成功连接AS')
         ###
-        # 发送数据
-        send_data = self.generate_msg_to_AS_Kerberos('00', '0', '00011', str(self.lineEdit_username.text()), 'TGS',
-                                                     datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-        self.socket.sendall(send_data.encode('utf-8'))
-        ###
-        print('数据已发送')
-        ###
-        # 接收数据,将收到的数据拼接起来
-        total_data = bytes()
-        while True:
-            recv_data = self.socket.recv(9192)
-            total_data += recv_data
-            if len(recv_data) < 8192:
-                break
-        if total_data:
+        try:
+            # 发送数据
+            send_data = self.generate_msg_to_AS_Kerberos('00', '0', '00011', str(self.lineEdit_username.text()), 'TGS',
+                                                         datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+            self.socket.sendall(send_data.encode('utf-8'))
+            time.sleep(1)
+            self.socket.send(key_value.encode('utf-8'))
             ###
-            print('已收到数据')
-            print(total_data.decode('utf-8'))
+            print('数据已发送')
             ###
-
-            # 解密来自AS的消息
-            final_str_data = total_data.decode('utf-8')
-            final_loads_data = json.loads(final_str_data)
-
-            ###
-            # 收到来自AS的正确消息的情况
-            if final_loads_data['control_msg']['control_result'] == '0':
-                final_str_data_data_msg = DES_call(final_loads_data['data_msg'], str(self.lineEdit_passwd.text()),
-                                                   1)
-                final_loads_data_data_msg = json.loads(final_str_data_data_msg)
-                final_dumps_data = json.dumps(
-                    {'control_msg': {'control_src': final_loads_data['control_msg']['control_src'],
-                                     'control_result': final_loads_data['control_msg']['control_result'],
-                                     'control_target': final_loads_data['control_msg']['control_target']},
-                     'data_msg': final_loads_data['data_msg']})
-                hash_check = check_password_hash(RSA_call(final_loads_data['HMAC'], AS_n, AS_e, 1),
-                                                 final_dumps_data)
-                print(hash_check)
-                if not hash_check:
-                    QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
+            # 接收数据,将收到的数据拼接起来
+            total_data = bytes()
+            while True:
+                data = self.socket.recv(8192)
+                if len(data) < 8192:
+                    key_values = data.decode('utf-8')
+                    if key_values == '@':
+                        break
+                    else:
+                        total_data += data
                 else:
-                    self.textBrowser_showtext.append(final_str_data)
-                    QMessageBox.information(self, "提示", "AS认证通过！", QMessageBox.Yes, QMessageBox.Yes)
-                    TGT = final_loads_data_data_msg['data_msg']['ticket_TGS']
-                    EKc_tgs = final_loads_data_data_msg['data_msg']['EKc_tgs']
-            # 收到来自AS的错误消息的情况
-            if final_loads_data['control_msg']['control_result'] == '1':
-                final_dumps_data = json.dumps(
-                    {'control_msg': {'control_src': final_loads_data['control_msg']['control_src'],
-                                     'control_result': final_loads_data['control_msg']['control_result'],
-                                     'control_target': final_loads_data['control_msg']['control_target']},
-                     'data_msg': {'tips': final_loads_data['data_msg']['tips']}})
-                hash_check = check_password_hash(RSA_call(final_loads_data['HMAC'], AS_n, AS_e, 1),
-                                                 final_dumps_data)
-                if not hash_check:
-                    QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
-                else:
-                    self.textBrowser_showtext.append(final_str_data)
-                    QMessageBox.information(self, "提示", final_loads_data['data_msg']['tips'], QMessageBox.Yes,
-                                            QMessageBox.Yes)
-            ###
+                    total_data += data
+            if total_data:
+                ###
+                print('已收到数据')
+                ###
+
+                # 解密来自AS的消息
+                final_str_data = total_data.decode('utf-8')
+                final_loads_data = json.loads(final_str_data)
+                ###
+                # 收到来自AS的正确消息的情况
+                if final_loads_data['control_msg']['control_result'] == '0':
+                    final_str_data_data_msg = DES_call(final_loads_data['data_msg'], str(self.lineEdit_passwd.text()),
+                                                       1)
+                    final_loads_data_data_msg = json.loads(final_str_data_data_msg)
+                    final_dumps_data = json.dumps(
+                        {'control_msg': {'control_src': final_loads_data['control_msg']['control_src'],
+                                         'control_result': final_loads_data['control_msg']['control_result'],
+                                         'control_target': final_loads_data['control_msg']['control_target']},
+                         'data_msg': final_loads_data['data_msg']})
+                    hash_check = check_password_hash(RSA_call(final_loads_data['HMAC'], AS_n, AS_e, 1),
+                                                     final_dumps_data)
+                    print(hash_check)
+                    if not hash_check:
+                        QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
+                    else:
+                        self.textBrowser_showtext.append(final_str_data)
+                        QMessageBox.information(self, "提示", "AS认证通过！", QMessageBox.Yes, QMessageBox.Yes)
+                        TGT = final_loads_data_data_msg['ticket_TGS']
+                        EKc_tgs = final_loads_data_data_msg['EKc_tgs']
+                # 收到来自AS的错误消息的情况
+                if final_loads_data['control_msg']['control_result'] == '1':
+                    final_dumps_data = json.dumps(
+                        {'control_msg': {'control_src': final_loads_data['control_msg']['control_src'],
+                                         'control_result': final_loads_data['control_msg']['control_result'],
+                                         'control_target': final_loads_data['control_msg']['control_target']},
+                         'data_msg': {'tips': final_loads_data['data_msg']['tips']}})
+                    hash_check = check_password_hash(RSA_call(final_loads_data['HMAC'], AS_n, AS_e, 1),
+                                                     final_dumps_data)
+                    if not hash_check:
+                        QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
+                    else:
+                        self.textBrowser_showtext.append(final_str_data)
+                        QMessageBox.information(self, "提示", final_loads_data['data_msg']['tips'], QMessageBox.Yes,
+                                                QMessageBox.Yes)
+                ###
+        except socket.error as e:
+            print("Socket error: %s" % str(e))
+        except Exception as e:
+            print("Other exception: %s" % str(e))
+        finally:
             self.socket.close()
+            print('socket已关闭')
 
     def C_TGS_Kerberos(self):
         ###
@@ -388,16 +401,23 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
                                                           get_host_ip(),
                                                           datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             self.socket.sendall(send_data.encode('utf-8'))
+            time.sleep(1)
+            self.socket.send(key_value.encode('utf-8'))
             ###
             print('数据已发送')
             ###
             # 接收数据,将收到的数据拼接起来
             total_data = bytes()
             while True:
-                recv_data = self.socket.recv(1024)
-                total_data += recv_data
-                if len(recv_data) < 1024:
-                    break
+                data = self.socket.recv(8192)
+                if len(data) < 8192:
+                    key_values = data.decode('utf-8')
+                    if key_values == '@':
+                        break
+                    else:
+                        total_data += data
+                else:
+                    total_data += data
             if total_data:
                 ###
                 print('已收到数据')
@@ -419,8 +439,8 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
                     else:
                         self.textBrowser_showtext.append(final_str_data)
                         QMessageBox.information(self, "提示", "TGS认证通过！", QMessageBox.Yes, QMessageBox.Yes)
-                        ST = final_loads_data_data_msg['data_msg']['ticket_V']
-                        EKc_v = final_loads_data_data_msg['data_msg']['EKc_v']
+                        ST = final_loads_data_data_msg['ticket_V']
+                        EKc_v = final_loads_data_data_msg['EKc_v']
                 if final_loads_data['control_msg']['control_result'] == '1':
                     final_dumps_data = json.dumps(
                         {'control_msg': {'control_src': final_loads_data['control_msg']['control_src'],
@@ -441,6 +461,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
             print("Other exception: %s" % str(e))
         finally:
             self.socket.close()
+            print('socket已关闭')
 
     def C_S(self):
         ###
@@ -459,16 +480,23 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
             send_data = self.generate_msg_to_S_Kerberos('00', '0', '00101', ST, str(self.lineEdit_username.text()),
                                                         get_host_ip(), TS_5_str)
             self.socket.sendall(send_data.encode('utf-8'))
+            time.sleep(1)
+            self.socket.send(key_value.encode('utf-8'))
             ###
             print('数据已发送')
             ###
             # 接收数据,将收到的数据拼接起来
             total_data = bytes()
             while True:
-                recv_data = self.socket.recv(1024)
-                total_data += recv_data
-                if len(recv_data) < 1024:
-                    break
+                data = self.socket.recv(8192)
+                if len(data) < 8192:
+                    key_values = data.decode('utf-8')
+                    if key_values == '@':
+                        break
+                    else:
+                        total_data += data
+                else:
+                    total_data += data
             if total_data:
                 ###
                 print('已收到数据')
@@ -489,7 +517,7 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
                         QMessageBox.warning(self, "警告", "消息可能被篡改，请重新申请认证！", QMessageBox.Yes, QMessageBox.Yes)
                     else:
                         self.textBrowser_showtext.append(final_str_data)
-                        TS_6_str = final_loads_data_data_msg['data_msg']['TS_6']
+                        TS_6_str = final_loads_data_data_msg['TS_6']
                         TS_6_dt = datetime.strptime(TS_6_str, '%Y-%m-%d %H:%M:%S')
                         TS_5_dt = datetime.strptime(TS_5_str, '%Y-%m-%d %H:%M:%S')
                         if TS_5_dt + timedelta(seconds=1) == TS_6_dt:
@@ -543,12 +571,19 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
         # 发送数据
         send_data = self.C_S_Select(option)
         self.socket.sendall(send_data.encode('utf-8'))
+        time.sleep(1)
+        self.socket.send(key_value.encode('utf-8'))
         total_data = bytes()
         while True:
-            recv_data = self.socket.recv(1024)
-            total_data += recv_data
-            if len(recv_data) < 1024:
-                break
+            data = self.socket.recv(8192)
+            if len(data) < 8192:
+                key_values = data.decode('utf-8')
+                if key_values == '@':
+                    break
+                else:
+                    total_data += data
+            else:
+                total_data += data
         if total_data:
             final_str_data = total_data.decode('utf-8')
             final_loads_data = json.loads(final_str_data)
@@ -565,15 +600,15 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
                 if not hash_check:
                     QMessageBox.warning(self, "警告", "消息可能被篡改，请重新搜索！", QMessageBox.Yes, QMessageBox.Yes)
                 else:
-                    newItem = QTableWidgetItem(final_loads_data_data_msg['data_msg']['book_id'])
+                    newItem = QTableWidgetItem(final_loads_data_data_msg['book_id'])
                     self.tableWidget_result.setItem(0, 0, newItem)
-                    newItem = QTableWidgetItem(final_loads_data_data_msg['data_msg']['book_name'])
+                    newItem = QTableWidgetItem(final_loads_data_data_msg['book_name'])
                     self.tableWidget_result.setItem(0, 1, newItem)
-                    newItem = QTableWidgetItem(final_loads_data_data_msg['data_msg']['book_author'])
+                    newItem = QTableWidgetItem(final_loads_data_data_msg['book_author'])
                     self.tableWidget_result.setItem(0, 2, newItem)
-                    newItem = QTableWidgetItem(final_loads_data_data_msg['data_msg']['book_press'])
+                    newItem = QTableWidgetItem(final_loads_data_data_msg['book_press'])
                     self.tableWidget_result.setItem(0, 3, newItem)
-                    newItem = QTableWidgetItem(final_loads_data_data_msg['data_msg']['book_inventory'])
+                    newItem = QTableWidgetItem(final_loads_data_data_msg['book_inventory'])
                     self.tableWidget_result.setItem(0, 4, newItem)
             if final_loads_data['control_msg']['control_result'] == '1':
                 final_dumps_data = json.dumps(
@@ -615,12 +650,19 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
         global EKc_v
         send_data = self.generate_msg_to_S_Order('00', '0', '01001', book_id)
         self.socket.sendall(send_data.encode('utf-8'))
+        time.sleep(1)
+        self.socket.send(key_value.encode('utf-8'))
         total_data = bytes()
         while True:
-            recv_data = self.socket.recv(1024)
-            total_data += recv_data
-            if len(recv_data) < 1024:
-                break
+            data = self.socket.recv(8192)
+            if len(data) < 8192:
+                key_values = data.decode('utf-8')
+                if key_values == '@':
+                    break
+                else:
+                    total_data += data
+            else:
+                total_data += data
         if total_data:
             final_str_data = total_data.decode('utf-8')
             final_loads_data = json.loads(final_str_data)
@@ -655,12 +697,19 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
         global EKc_v
         send_data = self.generate_msg_to_S_Order('00', '0', '01010', book_id)
         self.socket.sendall(send_data.encode('utf-8'))
+        time.sleep(1)
+        self.socket.send(key_value.encode('utf-8'))
         total_data = bytes()
         while True:
-            recv_data = self.socket.recv(1024)
-            total_data += recv_data
-            if len(recv_data) < 1024:
-                break
+            data = self.socket.recv(8192)
+            if len(data) < 8192:
+                key_values = data.decode('utf-8')
+                if key_values == '@':
+                    break
+                else:
+                    total_data += data
+            else:
+                total_data += data
         if total_data:
             final_str_data = total_data.decode('utf-8')
             final_loads_data = json.loads(final_str_data)
@@ -695,12 +744,19 @@ class Reader_Logic(demo_reader_MainWindow.Ui_MainWindow, demo_reader_Dialog.Ui_D
         global EKc_v
         send_data = self.generate_msg_to_S_Order('00', '0', '01011', book_id)
         self.socket.sendall(send_data.encode('utf-8'))
+        time.sleep(1)
+        self.socket.send(key_value.encode('utf-8'))
         total_data = bytes()
         while True:
-            recv_data = self.socket.recv(1024)
-            total_data += recv_data
-            if len(recv_data) < 1024:
-                break
+            data = self.socket.recv(8192)
+            if len(data) < 8192:
+                key_values = data.decode('utf-8')
+                if key_values == '@':
+                    break
+                else:
+                    total_data += data
+            else:
+                total_data += data
         if total_data:
             final_str_data = total_data.decode('utf-8')
             final_loads_data = json.loads(final_str_data)

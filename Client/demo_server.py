@@ -23,20 +23,10 @@ def Creat_thread(sock, addr):
         while True:
             # # 将收到的数据拼接起来
             total_data = bytes()
-            # data = sock.re         v     v                  av          b  b  v           bbj         vf vcv(1024)
-            # total_data += data
-            # num = len(data)
-            # # 如果没有数据了，读出来的data长度为0，len(data)==0
-            # while len(data) > 0:
-            #     data = sock.recv(1024)
-            #     num += len(data)
-            #     total_data += data
-            # total_data = bytes()
             while True:
                 data = sock.recv(8192)
                 if len(data) < 8192:
                     key_values = data.decode('utf-8')
-                   # print(key_values)
                     if key_values == '@':
                         break
                     else:
