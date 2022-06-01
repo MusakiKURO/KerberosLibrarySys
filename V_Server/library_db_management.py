@@ -165,7 +165,7 @@ def borrowe_book(data):
     book_inventory = results[0]['book_inventory']
     print(book_inventory)
     if book_inventory > 0:
-        sql = "UPDATE BOOK SET BOOK_INVENTORY = BOOK_INVENTORY-1 BOOK_BORROWED=BOOK_BORROWED+1 WHERE BOOK_ID = '%s'" % book_id
+        sql = "UPDATE BOOK SET BOOK_INVENTORY = BOOK_INVENTORY-1,BOOK_BORROWED=BOOK_BORROWED+1 WHERE BOOK_ID = '%s'" % book_id
         try:
             cursor.execute(sql)
             db.commit()
@@ -220,27 +220,6 @@ def reserve_book(data):
         results = cursor.fetchall()
         lock.acquire()
         if results:
-            sql = "INSERT INTO BOOK_RESERVATION(BOOK_ID,READER_NUMBER) VALUES ('%s',1)" % book_id
-            try:
-                cursor.execute(sql)
-                db.commit()
-                reserve_data_msg = data_msg()
-                reserve_data_msg.tips = '预约成功'
-                data_msg_dict = reserve_data_msg.create_data_msg()
-                control_msg = con_msg('0', control_target[2])
-                con_msg_dict = control_msg.create_con_msg()
-                str_msg_final = json.dumps(create_send_msg(con_msg_dict, data_msg_dict))
-                lock.release()
-            except:
-                db.rollback()
-                print('error_1')
-                error_data_msg = data_msg()
-                error_data_msg.tips = '预约失败'
-                data_msg_dict = error_data_msg.create_data_msg()
-                control_msg = con_msg('1', control_target[2])
-                con_msg_dict = control_msg.create_con_msg()
-                str_msg_final = json.dumps(create_send_msg(con_msg_dict, data_msg_dict))
-        else:
             sql = "UPDATE BOOK_RESERVATION SET READER_NUMBER = READER_NUMBER+1 WHERE BOOK_ID='%s'" % book_id
             try:
                 cursor.execute(sql)
@@ -261,6 +240,27 @@ def reserve_book(data):
                 control_msg = con_msg('1', control_target[2])
                 con_msg_dict = control_msg.create_con_msg()
                 str_msg_final = json.dumps(create_send_msg(con_msg_dict, data_msg_dict))
+        else:
+            sql = "INSERT INTO BOOK_RESERVATION(BOOK_ID,READER_NUMBER) VALUES ('%s',1)" % book_id
+            try:
+                cursor.execute(sql)
+                db.commit()
+                reserve_data_msg = data_msg()
+                reserve_data_msg.tips = '预约成功'
+                data_msg_dict = reserve_data_msg.create_data_msg()
+                control_msg = con_msg('0', control_target[2])
+                con_msg_dict = control_msg.create_con_msg()
+                str_msg_final = json.dumps(create_send_msg(con_msg_dict, data_msg_dict))
+                lock.release()
+            except:
+                db.rollback()
+                print('error_1')
+                error_data_msg = data_msg()
+                error_data_msg.tips = '预约失败'
+                data_msg_dict = error_data_msg.create_data_msg()
+                control_msg = con_msg('1', control_target[2])
+                con_msg_dict = control_msg.create_con_msg()
+                str_msg_final = json.dumps(create_send_msg(con_msg_dict, data_msg_dict))
     return str_msg_final
 
 
@@ -271,7 +271,7 @@ def reserve_book(data):
 
 def return_book(data):
     book_id = data['book_id']
-    sql = "UPDATE BOOK SET BOOK_INVENTORY = BOOK_INVENTORY+1  BOOK_BORROWED = BOOK_BORROWED-1 WHERE BOOK_ID='%s'" % book_id
+    sql = "UPDATE BOOK SET BOOK_INVENTORY = BOOK_INVENTORY+1,BOOK_BORROWED = BOOK_BORROWED-1 WHERE BOOK_ID='%s'" % book_id
     lock.acquire()
     try:
         cursor.execute(sql)
