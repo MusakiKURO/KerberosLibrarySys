@@ -4,8 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c3cfbabc-79c7-44f1-854f-b18303507d47" name="变更" comment="KDC hashmac commit5">
+    <list default="true" id="c3cfbabc-79c7-44f1-854f-b18303507d47" name="变更" comment="KDC hashmac commit6">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/demo_manager_logic.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/demo_manager_logic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/demo_reader_logic.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/demo_reader_logic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/log.log" beforeDir="false" afterPath="$PROJECT_DIR$/Client/log.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KDC_AS/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/KDC_AS/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KDC_TGS/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/KDC_TGS/__init__.py" afterDir="false" />
     </list>
@@ -48,7 +51,7 @@
       <recent name="C:\Users\ZUO\PycharmProjects\KerberosLibrarySys\Client" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.__init__ (1)">
+  <component name="RunManager" selected="Python.demo_manager_client_main">
     <configuration name="__init__ (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="KerberosLibrarySys" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -91,7 +94,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="demo_MainWindow_logic" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="demo_manager_client_main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="KerberosLibrarySys" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -103,7 +106,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Client/demo_MainWindow_logic.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Client/demo_manager_client_main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -177,11 +180,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.__init__ (1)" />
-        <item itemvalue="Python.__init__" />
+        <item itemvalue="Python.demo_manager_client_main" />
         <item itemvalue="Python.demo_reader_client_main" />
         <item itemvalue="Python.demo_reader_logic" />
-        <item itemvalue="Python.demo_MainWindow_logic" />
+        <item itemvalue="Python.__init__ (1)" />
+        <item itemvalue="Python.__init__" />
       </list>
     </recent_temporary>
   </component>
@@ -348,7 +351,14 @@
       <option name="project" value="LOCAL" />
       <updated>1654134393410</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="KDC hashmac commit6">
+      <created>1654146673948</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1654146673948</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -383,6 +393,7 @@
     <MESSAGE value="KDC hashmac commit3" />
     <MESSAGE value="KDC hashmac commit4" />
     <MESSAGE value="KDC hashmac commit5" />
-    <option name="LAST_COMMIT_MESSAGE" value="KDC hashmac commit5" />
+    <MESSAGE value="KDC hashmac commit6" />
+    <option name="LAST_COMMIT_MESSAGE" value="KDC hashmac commit6" />
   </component>
 </project>

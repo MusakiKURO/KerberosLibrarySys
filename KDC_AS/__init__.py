@@ -13,6 +13,25 @@ import linkDB
 from DES.demo_DES import DES_call
 from KDC_AS.myAS import *
 
+# create logger
+logger_name = "example"
+logger = logging.getLogger(logger_name)
+logger.setLevel(logging.DEBUG)
+
+# create file handler
+log_path = "./aslog.log"
+fh = logging.FileHandler(log_path)
+fh.setLevel(logging.DEBUG)
+
+# create formatter
+fmt = "%(asctime)-15s %(levelname)s %(filename)s %(funcName)s %(lineno)d %(message)s"
+datefmt = "%a %d %b %Y %H:%M:%S"
+formatter = logging.Formatter(fmt, datefmt)
+
+# add handler and formatter to logger
+fh.setFormatter(formatter)
+logger.addHandler(fh)
+
 SERVER_IP = ''
 SERVER_PORT = 7788
 
@@ -40,6 +59,8 @@ class Handler(BaseRequestHandler):
         # data = sock.recv(1024 * 10).decode()
         msg_data = json.loads(total_data)
         # print(msg_data)
+        logger.info('接收C的消息')
+        logger.info(msg_data)
         final_dumps_data = json.dumps(
             {'control_msg': {'control_src': msg_data['control_msg']['control_src'],
                              'control_result': msg_data['control_msg']['control_result'],
@@ -53,6 +74,8 @@ class Handler(BaseRequestHandler):
         hash_check = check_password_hash(RSA_call(msg_data['HMAC'], Pk_c, 65537, 1),
                                          final_dumps_data)
         # print(hash_check)
+        logger.info('hash验证结果')
+        logger.info(str(hash_check))
         if hash_check:
             if msg_data['control_msg']['control_target'] == '00011':
                 msg_CtoA = msgCtoA(msg_data['data_msg']['ID_c'], msg_data['data_msg']['ID_tgs'],
@@ -64,6 +87,8 @@ class Handler(BaseRequestHandler):
                     minutes=5):
                     msg_AtoC = create_msgAtoC(msg_CtoA, TS_2, address)
                     # print(msg_AtoC)
+                    logger.info('生成发送给c的数据')
+                    logger.info(str(msg_AtoC))
                     self.send_msg(msg_AtoC, EK_c, '01', '0', '00001')
             elif msg_data['control_msg']['control_target'] == '00001':
                 print('')
@@ -82,11 +107,13 @@ class Handler(BaseRequestHandler):
         # 这里开始使用传数据
         send_data = generate_msg_to_C(src, result, target, DES_call(json.dumps(msg_AtoC), EK_c, 0))
         # print(send_data)
+        logger.info('发送给c的报文')
+        logger.info(send_data)
         key_values = '@'
         self.request.sendall(send_data.encode('utf-8'))
         time.sleep(1)
         self.request.send(key_values.encode('utf-8'))
-        print('---------------发送完成---- -------------')
+        logger.info('---------------发送完成---- -------------')
 
 # def create_Thread(sock, addr):
 #     print('Accept new connection from %s:%s...' % addr)
@@ -156,6 +183,9 @@ def create_msgAtoC(msg_CtoA, TS_2, addr):
             'TS_2': ticket_temp.ts_2,
             'LifeTime_2': ticket_temp.lifetime_2
         }
+    print(ticket_TGS)
+    logger.info('生成TGS的票据')
+    logger.info(str(ticket_TGS))
     msg_AtoC_tmp = msgAtoC(TS_2, ticket_temp.EKc_tgs)
     msg_AtoC = \
         {

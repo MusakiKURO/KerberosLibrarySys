@@ -114,7 +114,7 @@ class Dialog(demo_reader_Dialog.Ui_Dialog):
         HMAC = generate_password_hash(str_msg_origin)
         dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
                           'data_msg': DES_call(json.dumps({'book_content': content}), EKc_v, 0),
-                          'HMAC': RSA_call(HMAC, C_n_3, C_d_3, 0)}
+                          'HMAC': RSA_call(HMAC, C_n_1, C_d_1, 0)}
         str_msg_final = json.dumps(dict_msg_final)
         return str_msg_final
 
@@ -125,7 +125,7 @@ class Dialog(demo_reader_Dialog.Ui_Dialog):
         HMAC = generate_password_hash(str_msg_origin)
         dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
                           'data_msg': DES_call(json.dumps({'book_id': book_id}), EKc_v, 0),
-                          'HMAC': RSA_call(HMAC, C_n_3, C_d_3, 0)}
+                          'HMAC': RSA_call(HMAC, C_n_1, C_d_1, 0)}
         str_msg_final = json.dumps(dict_msg_final)
         return str_msg_final
 
@@ -136,7 +136,7 @@ class Dialog(demo_reader_Dialog.Ui_Dialog):
         HMAC = generate_password_hash(str_msg_origin)
         dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
                           'data_msg': DES_call(json.dumps({'book_id': book_id}), EKc_v, 0),
-                          'HMAC': RSA_call(HMAC, C_n_3, C_d_3, 0)}
+                          'HMAC': RSA_call(HMAC, C_n_1, C_d_1, 0)}
         str_msg_final = json.dumps(dict_msg_final)
         return str_msg_final
 
@@ -147,7 +147,7 @@ class Dialog(demo_reader_Dialog.Ui_Dialog):
         HMAC = generate_password_hash(str_msg_origin)
         dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
                           'data_msg': DES_call(json.dumps({'book_id': book_id}), EKc_v, 0),
-                          'HMAC': RSA_call(HMAC, C_n_3, C_d_3, 0)}
+                          'HMAC': RSA_call(HMAC, C_n_1, C_d_1, 0)}
         str_msg_final = json.dumps(dict_msg_final)
         return str_msg_final
 
@@ -466,7 +466,7 @@ class Reader_Logic(demo_reader_MainWindow_1.Ui_MainWindow, demo_reader_Dialog.Ui
         self.textBrowser_plain.append(str_msg_final_plain)
         dict_msg_final = {'control_msg': {'control_src': src, 'control_result': result, 'control_target': target},
                           'data_msg': {'ID_c': ID_c, 'ID_tgs': ID_tgs, 'TS_1': TS_1},
-                          'HMAC': RSA_call(HMAC, C_n_3, C_d_3, 0)}
+                          'HMAC': RSA_call(HMAC, C_n_1, C_d_1, 0)}
         str_msg_final = json.dumps(dict_msg_final)
         self.textBrowser_cipher.append(str_msg_final)
         return str_msg_final
@@ -490,7 +490,7 @@ class Reader_Logic(demo_reader_MainWindow_1.Ui_MainWindow, demo_reader_Dialog.Ui
                           'data_msg': {'ID_v': ID_v, 'ticket_TGS': Ticket_tgs,
                                        'Authenticator': DES_call(json.dumps({'ID_c': ID_c, 'AD_c': AD_c, 'TS_3': TS_3}),
                                                                  EKc_tgs, 0)},
-                          'HMAC': RSA_call(HMAC, C_n_3, C_d_3, 0)}
+                          'HMAC': RSA_call(HMAC, C_n_1, C_d_1, 0)}
         str_msg_final = json.dumps(dict_msg_final)
         self.textBrowser_cipher.append(str_msg_final)
         return str_msg_final
@@ -514,7 +514,7 @@ class Reader_Logic(demo_reader_MainWindow_1.Ui_MainWindow, demo_reader_Dialog.Ui
                           'data_msg': {'ticket_V': Ticket_v,
                                        'Authenticator': DES_call(json.dumps({'ID_c': ID_c, 'AD_c': AD_c, 'TS_5': TS_5}),
                                                                  EKc_v, 0)},
-                          'HMAC': RSA_call(HMAC, C_n_3, C_d_3, 0)}
+                          'HMAC': RSA_call(HMAC, C_n_1, C_d_1, 0)}
         str_msg_final = json.dumps(dict_msg_final)
         self.textBrowser_cipher.append(str_msg_final)
         return str_msg_final

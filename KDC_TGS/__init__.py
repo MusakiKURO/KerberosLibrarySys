@@ -14,6 +14,26 @@ import linkDB
 from DES.demo_DES import DES_call
 from KDC_TGS.myTGS import *
 
+# create logger
+logger_name = "example"
+logger = logging.getLogger(logger_name)
+logger.setLevel(logging.DEBUG)
+
+# create file handler
+log_path = "./tgslog.log"
+fh = logging.FileHandler(log_path)
+fh.setLevel(logging.DEBUG)
+
+# create formatter
+fmt = "%(asctime)-15s %(levelname)s %(filename)s %(funcName)s %(lineno)d %(message)s"
+datefmt = "%a %d %b %Y %H:%M:%S"
+formatter = logging.Formatter(fmt, datefmt)
+
+# add handler and formatter to logger
+fh.setFormatter(formatter)
+logger.addHandler(fh)
+
+
 SERVER_IP = ''
 SERVER_PORT = 8788
 
@@ -36,7 +56,8 @@ class Handler(BaseRequestHandler):
                 total_data += data
         # data = sock.recv(1024 * 10).decode()
         msg_data = json.loads(total_data)
-        # print(msg_data)
+        logger.info('接收来自C的报文')
+        logger.info(msg_data)
         # file = open('from_client.json', 'w')
         # file.write(msg_data)
 
@@ -52,10 +73,14 @@ class Handler(BaseRequestHandler):
         msg_CtoT = msgCtoT(msg_data['data_msg']['ID_v'], msg_data['data_msg']['ticket_TGS'])
         # print('3')
         ticket_tgs = loadticket_tgs(msg_CtoT.ticket_tgs)
+        logger.info('TGS申请票据')
+        logger.info(str(ticket_tgs))
         Pk_c = int(db.getClientPk(ticket_tgs.id_c))
         hash_check = check_password_hash(RSA_call(msg_data['HMAC'], Pk_c, 65537, 1),
                                          final_dumps_data)
         # print(hash_check)
+        logger.info('hash结果')
+        logger.info(str(hash_check))
         if hash_check:
             if msg_data['control_msg']['control_target'] == '00100':
                 # 验证时钟同步
@@ -64,6 +89,8 @@ class Handler(BaseRequestHandler):
                     EK_CtoTGS = ticket_tgs.EKc_tgs
                     msg_TtoC = create_msgAtoT(ticket_tgs, msg_CtoT.id_v, TS_4)
                     # print(msg_TtoC)
+                    logger.info('生成C的消息')
+                    logger.info(str(msg_TtoC))
                     self.send_msg(msg_TtoC, EK_CtoTGS, '10', '0', '00000')
         else:
             tipsstr = {'tips': 'error'}
@@ -78,11 +105,13 @@ class Handler(BaseRequestHandler):
     def send_msg(self, msg_TtoC, EK_CtoTGS, src, result, target):
         send_data = generate_msg_to_C(src, result, target, DES_call(json.dumps(msg_TtoC), EK_CtoTGS, 0))
         # print(send_data)
+        logger.info('发送C的报文')
+        logger.info(send_data)
         key_values = '@'
         self.request.sendall(send_data.encode('utf-8'))
         time.sleep(1)
         self.request.send(key_values.encode('utf-8'))
-        print('---------------发送完成--- --------------')
+        logger.info('---------------发送完成--- --------------')
 
 
 def generate_msg_to_C(src, result, target, data_msg):
@@ -109,6 +138,9 @@ def create_msgAtoT(ticket_tgs, id_v, TS_4):
             'TS_4': ticket_V_tmp.ts_4,
             'Lifetime_4': ticket_V_tmp.lifetime_4
         }
+    logger.info('生成V的票据')
+    logger.info(str(ticket_V))
+    print(ticket_V)
     msgttoc = \
         {
             'EKc_v': ticket_V_tmp.EKc_v,
