@@ -1,8 +1,5 @@
 # coding=utf-8
 from socketserver import BaseRequestHandler, ThreadingTCPServer
-import socket
-import threading
-import json
 from datetime import *
 import time
 import logging

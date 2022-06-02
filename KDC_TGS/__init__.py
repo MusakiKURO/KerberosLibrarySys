@@ -1,7 +1,5 @@
 # coding=utf-8
 
-import socket
-import threading
 from socketserver import BaseRequestHandler, ThreadingTCPServer
 import time
 from datetime import datetime, timedelta
