@@ -4,13 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c3cfbabc-79c7-44f1-854f-b18303507d47" name="变更" comment="KDC hashmac commit3">
+    <list default="true" id="c3cfbabc-79c7-44f1-854f-b18303507d47" name="变更" comment="KDC hashmac commit4">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/demo_reader_client_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/demo_reader_client_main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/demo_reader_logic.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/demo_reader_logic.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KDC_AS/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/KDC_AS/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/KDC_TGS/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/KDC_TGS/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KDC_TGS/myTGS.py" beforeDir="false" afterPath="$PROJECT_DIR$/KDC_TGS/myTGS.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -337,7 +335,14 @@
       <option name="project" value="LOCAL" />
       <updated>1653992597483</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="KDC hashmac commit4">
+      <created>1654076443574</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1654076443574</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -370,6 +375,7 @@
     <MESSAGE value="KDC re createEK" />
     <MESSAGE value="KDC hashmac" />
     <MESSAGE value="KDC hashmac commit3" />
-    <option name="LAST_COMMIT_MESSAGE" value="KDC hashmac commit3" />
+    <MESSAGE value="KDC hashmac commit4" />
+    <option name="LAST_COMMIT_MESSAGE" value="KDC hashmac commit4" />
   </component>
 </project>
