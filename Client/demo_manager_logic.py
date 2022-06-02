@@ -16,7 +16,7 @@ from Client import demo_manager_MainWindow
 from Client import demo_manager_Dialog
 from DES.demo_DES import DES_call
 from RSA.demo_RSA import RSA_call
-from Log import create_log
+
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
 import socket
@@ -26,10 +26,10 @@ from datetime import datetime, timedelta
 
 # 要连接的目标IP和Port
 # AS
-AS_IP = '192.168.43.142'
+AS_IP = '192.168.43.193'
 AS_Port = 7788
 # TGS
-TGS_IP = '192.168.43.142'
+TGS_IP = '192.168.43.193'
 TGS_Port = 8788
 # Server
 S_IP = '192.168.43.229'
@@ -759,7 +759,7 @@ class MainWindow(demo_manager_MainWindow.Ui_MainWindow, demo_manager_Dialog.Ui_D
         time.sleep(1)
         self.C_TGS_Kerberos()
         time.sleep(1)
-        # self.C_S()
+        self.C_S()
 
 
 if __name__ == '__main__':
