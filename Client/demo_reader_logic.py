@@ -40,10 +40,10 @@ logger.addHandler(fh)
 
 # 要连接的目标IP和Port
 # AS
-AS_IP = '192.168.43.142'
+AS_IP = '192.168.43.193'
 AS_Port = 7788
 # TGS
-TGS_IP = '192.168.43.142'
+TGS_IP = '192.168.43.193'
 TGS_Port = 8788
 # Server
 S_IP = '192.168.43.229'
@@ -864,7 +864,7 @@ class Reader_Logic(demo_reader_MainWindow_1.Ui_MainWindow, demo_reader_Dialog.Ui
         time.sleep(1)
         self.C_TGS_Kerberos()
         time.sleep(1)
-        #self.C_S()
+        self.C_S()
 
 
 if __name__ == '__main__':
