@@ -123,6 +123,7 @@ def generate_msg_to_C(src, result, target, data_msg):
                       'data_msg': data_msg,
                       'HMAC': RSA_call(HMAC, myTGS.pKey, myTGS.sKey, 0)}
     str_msg_final = json.dumps(dict_msg_final)
+    print('左世豪')
     return str_msg_final
 
 
