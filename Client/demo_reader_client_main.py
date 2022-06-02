@@ -12,7 +12,6 @@ import sys
 class MainWindow_Test(demo_reader_logic.Reader_Logic):
     def __init__(self):
         super(MainWindow_Test, self).__init__()
-        self.pushButton_register.clicked.connect(self.C_AS_Register)
         self.pushButton_login.clicked.connect(self.Kerberos)
 
 

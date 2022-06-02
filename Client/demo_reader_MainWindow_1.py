@@ -1,11 +1,6 @@
-# coding=utf-8
-# @Time    : 2022/5/25 20:43
-# @Author  : Nisky
-# @File    : demo_manager_MainWindow.py
-# @Software: PyCharm
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'demo_reader_MainWindow.ui'
+# Form implementation generated from reading ui file 'demo_reader_MainWindow_1.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -156,7 +151,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "KerberosLibrarySys"))
-        self.label_sysname.setText(_translate("MainWindow", "图书管理借阅系统管理员登录界面"))
+        self.label_sysname.setText(_translate("MainWindow", "图书管理借阅系统读者登录界面"))
         self.label_plain.setText(_translate("MainWindow", "明文"))
         self.label_cipher.setText(_translate("MainWindow", "密文"))
         self.label_hmac.setText(_translate("MainWindow", "HMAC"))

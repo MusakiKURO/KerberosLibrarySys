@@ -1,11 +1,6 @@
-# coding=utf-8
-# @Time    : 2022/5/25 20:43
-# @Author  : Nisky
-# @File    : demo_manager_MainWindow.py
-# @Software: PyCharm
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'demo_reader_MainWindow.ui'
+# Form implementation generated from reading ui file 'demo_reader_MainWindow_1.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -88,33 +83,39 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.horizontalLayout.setObjectName("horizontalLayout")
         spacerItem9 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem9)
-        self.pushButton_login = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_login.setObjectName("pushButton_login")
-        self.horizontalLayout.addWidget(self.pushButton_login)
+        self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_2.setObjectName("pushButton_2")
+        self.horizontalLayout.addWidget(self.pushButton_2)
         spacerItem10 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem10)
+        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton.setObjectName("pushButton")
+        self.horizontalLayout.addWidget(self.pushButton)
+        spacerItem11 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem11)
         self.horizontalLayout.setStretch(1, 5)
+        self.horizontalLayout.setStretch(3, 5)
         self.gridLayout.addLayout(self.horizontalLayout, 4, 2, 1, 3)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        spacerItem11 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout_2.addItem(spacerItem11)
+        spacerItem12 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_2.addItem(spacerItem12)
         self.label_username = QtWidgets.QLabel(self.centralwidget)
         self.label_username.setObjectName("label_username")
         self.verticalLayout_2.addWidget(self.label_username)
-        spacerItem12 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout_2.addItem(spacerItem12)
+        spacerItem13 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_2.addItem(spacerItem13)
         self.label_passwd = QtWidgets.QLabel(self.centralwidget)
         self.label_passwd.setObjectName("label_passwd")
         self.verticalLayout_2.addWidget(self.label_passwd)
-        spacerItem13 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout_2.addItem(spacerItem13)
+        spacerItem14 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_2.addItem(spacerItem14)
         self.gridLayout.addLayout(self.verticalLayout_2, 3, 2, 1, 1)
         self.label_tip = QtWidgets.QLabel(self.centralwidget)
         self.label_tip.setObjectName("label_tip")
         self.gridLayout.addWidget(self.label_tip, 6, 2, 1, 3)
-        spacerItem14 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout.addItem(spacerItem14, 3, 5, 1, 1)
+        spacerItem15 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem15, 3, 5, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
 
         # 设置字体
@@ -155,12 +156,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "KerberosLibrarySys"))
-        self.label_sysname.setText(_translate("MainWindow", "图书管理借阅系统管理员登录界面"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.label_sysname.setText(_translate("MainWindow", "图书管理借阅系统读者注册登录界面"))
         self.label_plain.setText(_translate("MainWindow", "明文"))
         self.label_cipher.setText(_translate("MainWindow", "密文"))
         self.label_hmac.setText(_translate("MainWindow", "HMAC"))
-        self.pushButton_login.setText(_translate("MainWindow", "登录"))
+        self.pushButton_2.setText(_translate("MainWindow", "注册"))
+        self.pushButton.setText(_translate("MainWindow", "登录"))
         self.label_username.setText(_translate("MainWindow", "用户名"))
         self.label_passwd.setText(_translate("MainWindow", "密码"))
         self.label_tip.setText(_translate("MainWindow", "若要使用该系统，请输入您的账号和对应的密码，若没有账号，请选择注册。"))
